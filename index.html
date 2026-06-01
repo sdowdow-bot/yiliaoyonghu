@@ -1,0 +1,3140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>康护到家 - 用户端小程序原型</title>
+<style>
+:root {
+  --primary: #2B7BD6;
+  --primary-light: #E8F2FC;
+  --primary-dark: #1A5CA8;
+  --primary-gradient: linear-gradient(135deg, #2B7BD6 0%, #5BA0F5 100%);
+  --success: #34C759;
+  --success-light: #E8F8EE;
+  --warning: #FF9500;
+  --warning-light: #FFF0E6;
+  --danger: #FF3B30;
+  --danger-light: #FEE8E7;
+  --bg: #F5F6FA;
+  --card: #FFFFFF;
+  --text: #1D1D1F;
+  --text-secondary: #86868B;
+  --text-light: #AEAEB2;
+  --border: #E5E5EA;
+  --tab-height: 56px;
+  --header-height: 44px;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Phone Frame ===== */
+.phone-frame {
+  width: 390px;
+  height: 844px;
+  background: var(--bg);
+  border-radius: 44px;
+  overflow: hidden;
+  box-shadow: 0 0 0 3px #333, 0 0 0 6px #1a1a1a, 0 30px 80px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.phone-frame::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 28px;
+  background: #1a1a1a;
+  border-radius: 0 0 18px 18px;
+  z-index: 300;
+}
+
+/* ===== Status Bar ===== */
+.status-bar {
+  height: 48px;
+  background: #FFF;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+  position: relative;
+  z-index: 200;
+}
+
+.status-bar .time { font-size: 15px; font-weight: 700; }
+.status-icons { display: flex; gap: 5px; align-items: center; font-size: 12px; }
+
+/* ===== Page Container ===== */
+.page-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+.page-container::-webkit-scrollbar { display: none; }
+
+/* ===== Pages ===== */
+.page { display: none; padding-bottom: 20px; animation: pageIn 0.3s ease; }
+.page.active { display: block; }
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pageInBack {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.page.back-anim { animation: pageInBack 0.3s ease; }
+
+/* ===== Header ===== */
+.header {
+  background: rgba(255,255,255,0.92);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.header-title {
+  font-size: 17px;
+  font-weight: 700;
+  flex: 1;
+  text-align: center;
+}
+
+.header-back {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s;
+  color: var(--text);
+}
+
+.header-back:active { background: #f0f0f0; transform: scale(0.9); }
+.header-action { font-size: 14px; color: var(--primary); cursor: pointer; font-weight: 500; }
+
+/* ===== Search Bar ===== */
+.search-bar {
+  margin: 12px 16px;
+  background: #F2F2F7;
+  border-radius: 22px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-light);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.search-bar:active { transform: scale(0.98); background: #E8E8ED; }
+
+/* ===== Banner Carousel ===== */
+.banner-carousel {
+  margin: 0 16px 16px;
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  height: 150px;
+}
+
+.banner-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+}
+
+.banner-slide {
+  min-width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  color: #FFF;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner-slide::after {
+  content: '';
+  position: absolute;
+  right: -20px;
+  top: -30px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+}
+
+.banner-slide::before {
+  content: '';
+  position: absolute;
+  right: 40px;
+  bottom: -40px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+
+.banner-slide h2 { font-size: 20px; font-weight: 700; z-index: 1; }
+.banner-slide p { font-size: 13px; opacity: 0.9; margin-top: 4px; z-index: 1; }
+.banner-slide .banner-emoji { position: absolute; right: 24px; font-size: 56px; z-index: 1; opacity: 0.9; }
+
+.banner-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.banner-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.5);
+  transition: all 0.3s;
+}
+
+.banner-dot.active {
+  width: 18px;
+  background: #FFF;
+}
+
+/* ===== Icon Grid ===== */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 0 16px;
+  margin-bottom: 20px;
+}
+
+.icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+
+.icon-item:active { transform: scale(0.92); }
+
+.icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: transform 0.2s;
+}
+
+.icon-item:active .icon-circle { transform: scale(0.9); }
+.icon-item span { font-size: 11px; color: var(--text); font-weight: 500; }
+
+/* ===== Section ===== */
+.section { padding: 0 16px; margin-bottom: 20px; }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.section-title { font-size: 17px; font-weight: 700; }
+.section-more { font-size: 13px; color: var(--text-secondary); cursor: pointer; }
+
+/* ===== Product Card ===== */
+.product-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.product-scroll::-webkit-scrollbar { display: none; }
+
+.product-card {
+  min-width: 150px;
+  background: #FFF;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Waterfall Grid */
+.waterfall-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.product-card-full {
+  background: #FFF;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.product-card-full:active { transform: scale(0.97); }
+
+.product-img {
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  position: relative;
+}
+
+.product-img .product-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--danger);
+  color: #FFF;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.product-info { padding: 10px; }
+.product-name { font-size: 13px; font-weight: 600; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.product-price { font-size: 16px; font-weight: 700; color: var(--danger); margin-top: 6px; }
+.product-price span { font-size: 12px; }
+.product-tag { font-size: 10px; background: var(--warning-light); color: var(--warning); padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; }
+.product-sales { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+
+/* ===== Service Card ===== */
+.service-list { display: flex; flex-direction: column; gap: 12px; }
+
+.service-card {
+  background: #FFF;
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card:active { transform: scale(0.98); }
+
+.service-card::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+  border-radius: 0 3px 3px 0;
+}
+
+.service-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.service-body { flex: 1; min-width: 0; }
+.service-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.service-desc { font-size: 12px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.service-meta { display: flex; gap: 12px; margin-top: 8px; font-size: 11px; color: var(--text-secondary); }
+.service-meta span { display: flex; align-items: center; gap: 3px; }
+.service-price-tag { font-size: 16px; font-weight: 700; color: var(--danger); flex-shrink: 0; display: flex; align-items: center; }
+.service-price-tag span { font-size: 12px; }
+
+/* ===== Floating Cart ===== */
+.floating-cart {
+  position: fixed;
+  bottom: 80px;
+  right: calc(50% - 170px);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 4px 16px rgba(43,123,214,0.4);
+  cursor: pointer;
+  z-index: 50;
+  border: none;
+  transition: all 0.3s;
+}
+
+.floating-cart:active { transform: scale(0.9); }
+
+.floating-cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  background: var(--danger);
+  color: #FFF;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid #FFF;
+}
+
+/* ===== Service Type Card ===== */
+.service-type-card {
+  background: #FFF;
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+  border: 2px solid transparent;
+}
+
+.service-type-card:active { transform: scale(0.98); border-color: var(--primary); }
+
+.service-type-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.service-type-body { flex: 1; min-width: 0; }
+.service-type-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.service-type-desc { font-size: 12px; color: var(--text-secondary); }
+.service-type-price { font-size: 16px; font-weight: 700; color: var(--danger); flex-shrink: 0; }
+.service-type-price span { font-size: 12px; font-weight: 400; color: var(--text-secondary); }
+
+/* ===== Product Detail Long Image ===== */
+.detail-long-img {
+  width: 100%;
+  background: linear-gradient(180deg, #f0f4ff 0%, #e8eeff 30%, #f8f9ff 60%, #f0f4ff 100%);
+  padding: 20px 16px;
+  text-align: center;
+}
+
+.detail-long-img .img-section {
+  background: #FFF;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.detail-long-img .img-section h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.detail-long-img .img-placeholder {
+  height: 120px;
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.detail-long-img .img-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: left;
+  line-height: 1.6;
+}
+
+/* ===== Spec Table ===== */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.spec-table th, .spec-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.spec-table th {
+  background: var(--bg);
+  color: var(--text-secondary);
+  font-weight: 600;
+  width: 90px;
+  white-space: nowrap;
+}
+
+.spec-table td { color: var(--text); }
+
+/* ===== Post Need FAB ===== */
+.post-need-btn {
+  position: fixed;
+  bottom: 80px;
+  right: calc(50% - 170px);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 16px rgba(43,123,214,0.4);
+  cursor: pointer;
+  z-index: 50;
+  border: none;
+  transition: all 0.3s;
+}
+
+.post-need-btn:active { transform: scale(0.9); }
+
+/* ===== Tab Bar ===== */
+.tab-bar {
+  height: var(--tab-height);
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  border-top: 0.5px solid rgba(0,0,0,0.08);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 100;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  color: var(--text-light);
+  transition: all 0.2s;
+  font-size: 10px;
+  position: relative;
+}
+
+.tab-item.active { color: var(--primary); }
+.tab-icon { font-size: 22px; transition: transform 0.2s; }
+.tab-item.active .tab-icon { transform: scale(1.1); }
+.tab-item span { font-weight: 500; }
+
+.tab-item .tab-dot {
+  position: absolute;
+  top: 6px;
+  right: calc(50% - 16px);
+  width: 8px;
+  height: 8px;
+  background: var(--danger);
+  border-radius: 50%;
+  border: 2px solid #FFF;
+}
+
+/* Form Styles */
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: block; color: var(--text); }
+.form-label .required { color: var(--danger); margin-left: 2px; }
+
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  background: #FFF;
+  color: var(--text);
+  transition: border-color 0.2s;
+  outline: none;
+  font-family: inherit;
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color: var(--primary);
+}
+
+.form-textarea { resize: vertical; min-height: 80px; }
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%2386868B'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* Radio / Checkbox */
+.radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
+.radio-item { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; }
+.radio-dot {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--border); display: flex;
+  align-items: center; justify-content: center;
+  transition: border-color 0.2s;
+}
+.radio-dot::after {
+  content: ''; width: 10px; height: 10px; border-radius: 50%;
+  background: transparent; transition: background 0.2s;
+}
+.radio-item.selected .radio-dot { border-color: var(--primary); }
+.radio-item.selected .radio-dot::after { background: var(--primary); }
+
+/* Button */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.btn-primary { background: var(--primary); color: #FFF; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-outline { background: #FFF; color: var(--primary); border: 1.5px solid var(--primary); }
+.btn-outline:hover { background: var(--primary-light); }
+.btn-danger { background: var(--danger); color: #FFF; }
+.btn-sm { padding: 8px 16px; font-size: 13px; width: auto; display: inline-block; border-radius: 20px; }
+.btn-block { display: block; width: 100%; }
+
+/* Tag */
+.tag {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.tag-green { background: #E8F8EE; color: #34C759; }
+.tag-blue { background: #E8F2FC; color: #2B7BD6; }
+.tag-orange { background: #FFF0E6; color: #FF9500; }
+.tag-red { background: #FEE8E7; color: #FF3B30; }
+
+/* Order Card */
+.order-card {
+  background: #FFF;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.order-header {
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f5f5f5;
+  font-size: 13px;
+}
+
+.order-body { padding: 14px; display: flex; gap: 12px; }
+.order-img {
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-sm);
+  background: #f0f0f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  flex-shrink: 0;
+}
+.order-info { flex: 1; }
+.order-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.order-info p { font-size: 12px; color: var(--text-secondary); }
+.order-price { font-size: 15px; font-weight: 700; color: var(--danger); margin-top: 6px; }
+
+.order-footer {
+  padding: 10px 14px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #f5f5f5;
+}
+
+/* Delivery Option */
+.delivery-option {
+  background: #FFF;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  margin-bottom: 10px;
+}
+
+.delivery-option.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.delivery-icon { font-size: 28px; }
+.delivery-info { flex: 1; }
+.delivery-info h4 { font-size: 15px; font-weight: 600; }
+.delivery-info p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+/* ===== Profile Card ===== */
+.profile-card {
+  background: var(--primary-gradient);
+  margin: 16px;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-card::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+
+.profile-card::before {
+  content: '';
+  position: absolute;
+  right: 30px;
+  bottom: -40px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+
+.profile-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.profile-info { flex: 1; z-index: 1; }
+.profile-name { font-size: 18px; font-weight: 700; }
+.profile-status { font-size: 12px; opacity: 0.85; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+
+/* Profile Stats Row */
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  background: #FFF;
+  margin: 0 16px 12px;
+  border-radius: var(--radius);
+  padding: 16px 0;
+  box-shadow: var(--shadow);
+}
+
+.profile-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  flex: 1;
+  position: relative;
+}
+
+.profile-stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--border);
+}
+
+.profile-stat-num { font-size: 18px; font-weight: 700; color: var(--text); }
+.profile-stat-label { font-size: 11px; color: var(--text-secondary); }
+
+/* ===== Menu List ===== */
+.menu-list {
+  background: #FFF;
+  border-radius: var(--radius);
+  margin: 0 16px 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  gap: 12px;
+  border-bottom: 1px solid #f8f8f8;
+}
+
+.menu-item:last-child { border-bottom: none; }
+.menu-item:active { background: #f5f5f5; }
+.menu-icon { font-size: 20px; width: 24px; text-align: center; }
+.menu-text { flex: 1; font-size: 15px; font-weight: 500; }
+.menu-arrow { color: var(--text-light); font-size: 16px; }
+.menu-badge { font-size: 12px; color: var(--danger); background: var(--danger-light); padding: 2px 8px; border-radius: 10px; }
+
+/* ===== Auth Alert ===== */
+.auth-alert {
+  margin: 12px 16px;
+  padding: 12px 14px;
+  background: #FFF8E1;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #B45309;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 3px solid var(--warning);
+}
+
+.auth-alert:active { transform: scale(0.98); }
+
+/* ===== Health Record Display ===== */
+.record-card {
+  background: #FFF;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.record-title { font-size: 15px; font-weight: 700; }
+
+.record-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.record-row:last-child { border-bottom: none; }
+.record-row strong { color: var(--text); font-weight: 500; }
+
+/* ===== Empty State ===== */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-light);
+}
+
+.empty-state .empty-icon { font-size: 56px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: rgba(0,0,0,0.75);
+  color: #FFF;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 14px;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-align: center;
+  max-width: 260px;
+}
+
+.toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+/* ===== Filter Tabs ===== */
+.filter-tabs {
+  display: flex;
+  gap: 0;
+  background: #FFF;
+  padding: 4px;
+  margin: 12px 16px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.filter-tab {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.filter-tab.active {
+  background: var(--primary);
+  color: #FFF;
+  box-shadow: 0 2px 8px rgba(43,123,214,0.3);
+}
+
+/* Quantity Control */
+.qty-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: #FFF;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  transition: all 0.2s;
+}
+
+.qty-btn:hover { border-color: var(--primary); color: var(--primary); }
+.qty-num { font-size: 16px; font-weight: 600; min-width: 24px; text-align: center; }
+
+/* Bottom Action Bar */
+.bottom-bar {
+  position: sticky;
+  bottom: 0;
+  background: #FFF;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  z-index: 50;
+}
+
+.bottom-bar .total-price { font-size: 20px; font-weight: 700; color: var(--danger); flex: 1; }
+.bottom-bar .total-price span { font-size: 13px; font-weight: 400; color: var(--text-secondary); }
+
+/* Image Upload */
+.upload-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.upload-box {
+  width: 80px;
+  height: 80px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.upload-box:hover { border-color: var(--primary); }
+
+.upload-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-sm);
+  background: #f0f0f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  position: relative;
+}
+
+/* Switch Toggle */
+.switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  background: #E5E5EA;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.switch.on { background: var(--success); }
+.switch::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #FFF;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: left 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.switch.on::after { left: 22px; }
+
+/* Step Indicator */
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 16px 20px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #E5E5EA;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.step.active .step-num { background: var(--primary); color: #FFF; }
+.step.done .step-num { background: var(--success); color: #FFF; }
+.step.active { color: var(--primary); font-weight: 600; }
+.step-line { width: 40px; height: 2px; background: #E5E5EA; margin: 0 4px; }
+.step.done + .step-line { background: var(--success); }
+
+/* Chat-like need card */
+.need-card {
+  background: #FFF;
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--warning);
+}
+
+.need-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.need-user { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.need-time { font-size: 11px; color: var(--text-light); }
+.need-content { font-size: 14px; line-height: 1.5; margin-bottom: 8px; }
+.need-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.need-footer { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-secondary); }
+.need-budget { font-weight: 700; color: var(--danger); font-size: 16px; }
+.need-budget span { font-size: 12px; }
+
+/* ===== Modal Overlay ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-sheet {
+  background: #FFF;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 390px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 20px 16px 30px;
+  animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-handle {
+  width: 40px;
+  height: 4px;
+  background: #D1D1D6;
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+/* ===== Coupon Card ===== */
+.coupon-card {
+  display: flex;
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.coupon-card::before,
+.coupon-card::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: var(--bg);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.coupon-card::before { left: -8px; }
+.coupon-card::after { right: -8px; }
+
+.coupon-left {
+  width: 110px;
+  background: var(--primary-gradient);
+  color: #FFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
+  position: relative;
+}
+
+.coupon-amount { font-size: 26px; font-weight: 700; }
+.coupon-unit { font-size: 11px; opacity: 0.85; }
+.coupon-right {
+  flex: 1; background: #FFF;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.coupon-name { font-weight: 600; margin-bottom: 4px; font-size: 14px; }
+.coupon-condition { font-size: 11px; color: var(--text-secondary); }
+.coupon-time { font-size: 10px; color: var(--text-light); margin-top: 4px; }
+
+/* ===== Notification Item ===== */
+.notification-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: #FFF;
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.notification-item:active { transform: scale(0.98); }
+.notification-item.unread { border-left: 3px solid var(--primary); }
+
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.notification-body { flex: 1; min-width: 0; }
+.notification-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.notification-desc { font-size: 12px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.notification-time { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame" id="app">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <span class="status-icons">5G ▮▮▮▮ 🔋</span>
+  </div>
+
+  <!-- Page Container -->
+  <div class="page-container" id="pageContainer">
+
+    <!-- ==================== 首页（医疗器械商城） ==================== -->
+    <div class="page active" id="page-home">
+      <!-- 顶部搜索 -->
+      <div style="background:#FFF;padding:8px 0;">
+        <div class="search-bar" onclick="navigateTo('search')">
+          🔍 搜索医疗器械、医护服务...
+        </div>
+      </div>
+
+      <!-- Banner Carousel -->
+      <div class="banner-carousel" id="bannerCarousel">
+        <div class="banner-track" id="bannerTrack">
+          <div class="banner-slide" style="background:linear-gradient(135deg, #2B7BD6 0%, #5BA0F5 100%);">
+            <div>
+              <h2>🏥 康护到家</h2>
+              <p>专业医护 · 上门服务 · 器械到家</p>
+            </div>
+            <span class="banner-emoji">🏥</span>
+          </div>
+          <div class="banner-slide" style="background:linear-gradient(135deg, #FF9500 0%, #FFBA54 100%);">
+            <div>
+              <h2>🎉 新人专享优惠</h2>
+              <p>首单立减30元 · 限时领取</p>
+            </div>
+            <span class="banner-emoji">🎁</span>
+          </div>
+          <div class="banner-slide" style="background:linear-gradient(135deg, #34C759 0%, #6DD89E 100%);">
+            <div>
+              <h2>👨‍⚕️ 医护上门服务</h2>
+              <p>实名认证 · 安全放心 · 便捷预约</p>
+            </div>
+            <span class="banner-emoji">👨‍⚕️</span>
+          </div>
+        </div>
+        <div class="banner-dots" id="bannerDots">
+          <div class="banner-dot active"></div>
+          <div class="banner-dot"></div>
+          <div class="banner-dot"></div>
+        </div>
+      </div>
+
+      <!-- 快捷入口 - 5宫格 -->
+      <div class="icon-grid" style="grid-template-columns:repeat(5,1fr);">
+        <div class="icon-item" onclick="navigateTo('category-list', '检测仪器')">
+          <div class="icon-circle" style="background:#E8F2FC;">🩺</div>
+          <span>检测仪器</span>
+        </div>
+        <div class="icon-item" onclick="navigateTo('category-list', '康复辅具')">
+          <div class="icon-circle" style="background:#E8F8EE;">🦽</div>
+          <span>康复辅具</span>
+        </div>
+        <div class="icon-item" onclick="navigateTo('category-list', '护理耗材')">
+          <div class="icon-circle" style="background:#FFF0E6;">🩹</div>
+          <span>护理耗材</span>
+        </div>
+        <div class="icon-item" onclick="navigateTo('category-list', '呼吸氧疗')">
+          <div class="icon-circle" style="background:#E0F2FE;">💨</div>
+          <span>呼吸氧疗</span>
+        </div>
+        <div class="icon-item" onclick="navigateTo('category-list', '出行辅具')">
+          <div class="icon-circle" style="background:#F3E8FF;">🦯</div>
+          <span>出行辅具</span>
+        </div>
+      </div>
+
+      <!-- 实名认证提醒 -->
+      <div class="auth-alert" onclick="navigateTo('realname-auth')" id="authAlert">
+        ⚠️ <span style="flex:1;">您还未完成实名认证，部分功能受限</span> <span style="color:#2B7BD6;font-weight:600;">去认证 →</span>
+      </div>
+      <div class="auth-alert" style="background:#E8F8EE;color:#166534;display:none;" id="authDone">
+        ✅ <span style="flex:1;">实名认证已完成</span>
+      </div>
+
+      <!-- 商品推荐 -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">🔥 商品推荐</span>
+          <span class="section-more" onclick="filterHomeCategory('全部')">查看更多 ›</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          <div class="product-card-full" onclick="navigateTo('product-detail')" style="box-shadow:none;">
+            <div class="product-img" style="height:80px;font-size:28px;"><span class="product-badge">热销</span>🩻</div>
+            <div class="product-info" style="padding:6px 8px;">
+              <div class="product-name" style="font-size:11px;-webkit-line-clamp:1;">血压计 U701</div>
+              <div class="product-price" style="font-size:13px;"><span style="font-size:10px;">¥</span>299</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')" style="box-shadow:none;">
+            <div class="product-img" style="height:80px;font-size:28px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);"><span class="product-badge">热销</span>🩸</div>
+            <div class="product-info" style="padding:6px 8px;">
+              <div class="product-name" style="font-size:11px;-webkit-line-clamp:1;">血糖仪 卓越金采</div>
+              <div class="product-price" style="font-size:13px;"><span style="font-size:10px;">¥</span>568</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')" style="box-shadow:none;">
+            <div class="product-img" style="height:80px;font-size:28px;background:linear-gradient(135deg,#e0f2fe,#bae6fd);">💊</div>
+            <div class="product-info" style="padding:6px 8px;">
+              <div class="product-name" style="font-size:11px;-webkit-line-clamp:1;">雾化器 403M</div>
+              <div class="product-price" style="font-size:13px;"><span style="font-size:10px;">¥</span>459</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')" style="box-shadow:none;">
+            <div class="product-img" style="height:80px;font-size:28px;background:linear-gradient(135deg,#fef3c7,#fde68a);">🦯</div>
+            <div class="product-info" style="padding:6px 8px;">
+              <div class="product-name" style="font-size:11px;-webkit-line-clamp:1;">助行器 折叠款</div>
+              <div class="product-price" style="font-size:13px;"><span style="font-size:10px;">¥</span>389</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 分类筛选 -->
+      <div class="filter-tabs" style="overflow-x:auto;flex-wrap:nowrap;">
+        <div class="filter-tab active" onclick="filterHomeShop(this)">全部</div>
+        <div class="filter-tab" onclick="filterHomeShop(this)">检测仪器</div>
+        <div class="filter-tab" onclick="filterHomeShop(this)">康复辅具</div>
+        <div class="filter-tab" onclick="filterHomeShop(this)">护理耗材</div>
+        <div class="filter-tab" onclick="filterHomeShop(this)">呼吸氧疗</div>
+        <div class="filter-tab" onclick="filterHomeShop(this)">出行辅具</div>
+      </div>
+
+      <!-- 商品列表 - 双列瀑布流 -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">🩺 医疗器械</span>
+          <span class="section-more">更多 ›</span>
+        </div>
+        <div class="waterfall-grid">
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:150px;"><span class="product-badge">热销</span>🩻</div>
+            <div class="product-info">
+              <div class="product-name">欧姆龙电子血压计 U701</div>
+              <div class="product-price"><span>¥</span>299</div>
+              <div class="product-sales">已售 3.2k</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:130px;background:linear-gradient(135deg,#fce7f3,#fbcfe8);"><span class="product-badge">同城</span>🌡️</div>
+            <div class="product-info">
+              <div class="product-name">鱼跃红外体温计 YT-2</div>
+              <div class="product-price"><span>¥</span>159</div>
+              <div class="product-sales">已售 1.8k</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:140px;background:linear-gradient(135deg,#e0f2fe,#bae6fd);">💊</div>
+            <div class="product-info">
+              <div class="product-name">鱼跃雾化器 403M 家用</div>
+              <div class="product-price"><span>¥</span>459</div>
+              <div class="product-sales">已售 856</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:150px;background:linear-gradient(135deg,#fef3c7,#fde68a);"><span class="product-badge">热销</span>🦽</div>
+            <div class="product-info">
+              <div class="product-name">手动轮椅车 轻便折叠款</div>
+              <div class="product-price"><span>¥</span>1,280</div>
+              <div class="product-sales">已售 620</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:160px;background:linear-gradient(135deg,#ede9fe,#c4b5fd);">🩹</div>
+            <div class="product-info">
+              <div class="product-name">医用无菌敷料贴 10片装</div>
+              <div class="product-price"><span>¥</span>39</div>
+              <div class="product-sales">已售 5.6k</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:130px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);"><span class="product-badge">热销</span>🩸</div>
+            <div class="product-info">
+              <div class="product-name">罗氏血糖仪 卓越金采</div>
+              <div class="product-price"><span>¥</span>568</div>
+              <div class="product-sales">已售 2.1k</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:140px;background:linear-gradient(135deg,#fef3c7,#fde68a);">💉</div>
+            <div class="product-info">
+              <div class="product-name">三诺血糖试纸 50条装</div>
+              <div class="product-price"><span>¥</span>89</div>
+              <div class="product-sales">已售 4.3k</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:150px;background:linear-gradient(135deg,#fce7f3,#fbcfe8);">🩺</div>
+            <div class="product-info">
+              <div class="product-name">鱼跃听诊器 单面专业款</div>
+              <div class="product-price"><span>¥</span>128</div>
+              <div class="product-sales">已售 980</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 首页悬浮购物车 -->
+      <div class="floating-cart" id="floatingCart" onclick="navigateTo('cart')">
+        🛒 <span class="floating-cart-badge" id="cartBadge">2</span>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+
+    <!-- ==================== 服务页 ==================== -->
+    <div class="page" id="page-service">
+      <div class="header">
+        <span class="header-title">上门医护</span>
+      </div>
+
+      <!-- Banner -->
+      <div class="banner-carousel" style="margin:0 16px 12px;height:120px;border-radius:var(--radius-lg);overflow:hidden;">
+        <div style="min-width:100%;height:100%;background:linear-gradient(135deg,#34C759 0%, #6DD89E 100%);display:flex;align-items:center;padding:0 24px;color:#FFF;position:relative;overflow:hidden;">
+          <div style="z-index:1;">
+            <h2 style="font-size:18px;font-weight:700;">👨‍⚕️ 专业医护到家</h2>
+            <p style="font-size:12px;opacity:0.9;margin-top:4px;">实名认证 · 安全放心 · 便捷预约</p>
+          </div>
+          <span style="position:absolute;right:20px;font-size:56px;opacity:0.9;">🩺</span>
+        </div>
+      </div>
+
+      <!-- 搜索 -->
+      <div class="search-bar" onclick="navigateTo('search')">
+        🔍 搜索服务项目 / 医护人员
+      </div>
+
+      <!-- 服务模式切换 -->
+      <div class="filter-tabs">
+        <div class="filter-tab active" onclick="switchServiceMode(this, 'published')">医护服务</div>
+        <div class="filter-tab" onclick="switchServiceMode(this, 'appointment')">预约服务</div>
+      </div>
+
+      <!-- ===== 模式一：医护发布的服务 ===== -->
+      <div id="serviceModePublished">
+        <!-- 分类筛选 -->
+        <div class="filter-tabs" style="margin-top:0;">
+          <div class="filter-tab active" onclick="filterServiceTab(this, 'all')">全部</div>
+          <div class="filter-tab" onclick="filterServiceTab(this, 'nurse')">护理</div>
+          <div class="filter-tab" onclick="filterServiceTab(this, 'rehab')">康复</div>
+          <div class="filter-tab" onclick="filterServiceTab(this, 'injection')">注射</div>
+          <div class="filter-tab" onclick="filterServiceTab(this, 'other')">其他</div>
+        </div>
+
+        <!-- 服务列表 -->
+        <div class="section">
+          <div class="service-list">
+            <div class="service-card" onclick="navigateTo('service-detail')">
+              <div class="service-avatar">👩‍⚕️</div>
+              <div class="service-body">
+                <div class="service-title">静脉采血 + 送检服务 <span class="tag tag-green">可约</span></div>
+                <div class="service-desc">执业护士上门采血，含实验室送检，48h出报告</div>
+                <div class="service-meta">
+                  <span>👩‍⚕️ 李护士</span><span>⭐ 4.9</span><span>已服务 2.3k次</span>
+                </div>
+              </div>
+              <div class="service-price-tag"><span>¥</span>168</div>
+            </div>
+
+            <div class="service-card" onclick="navigateTo('service-detail')">
+              <div class="service-avatar" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">👨‍⚕️</div>
+              <div class="service-body">
+                <div class="service-title">术后伤口换药 <span class="tag tag-green">可约</span></div>
+                <div class="service-desc">执业护师上门，无菌换药，伤口评估，含耗材</div>
+                <div class="service-meta">
+                  <span>👨‍⚕️ 王护师</span><span>⭐ 4.8</span><span>已服务 1.8k次</span>
+                </div>
+              </div>
+              <div class="service-price-tag"><span>¥</span>220</div>
+            </div>
+
+            <div class="service-card" onclick="navigateTo('service-detail')">
+              <div class="service-avatar" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);">🧑‍⚕️</div>
+              <div class="service-body">
+                <div class="service-title">肌肉注射 / 皮下注射</div>
+                <div class="service-desc">执业护士上门，遵医嘱执行注射，含基础耗材</div>
+                <div class="service-meta">
+                  <span>🧑‍⚕️ 张护士</span><span>⭐ 4.9</span><span>已服务 3.1k次</span>
+                </div>
+              </div>
+              <div class="service-price-tag"><span>¥</span>128</div>
+            </div>
+
+            <div class="service-card" onclick="navigateTo('service-detail')">
+              <div class="service-avatar" style="background:linear-gradient(135deg,#ede9fe,#c4b5fd);">🏃</div>
+              <div class="service-body">
+                <div class="service-title">康复理疗 / 推拿按摩</div>
+                <div class="service-desc">康复治疗师上门，专业手法康复，60min/次</div>
+                <div class="service-meta">
+                  <span>🏃 刘康复师</span><span>⭐ 4.7</span><span>已服务 980次</span>
+                </div>
+              </div>
+              <div class="service-price-tag"><span>¥</span>298</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 模式二：预约服务 - 卡片式展示服务类型 ===== -->
+      <div id="serviceModeAppointment" style="display:none;">
+        <div class="section" style="margin-top:12px;">
+          <div style="background:#E8F2FC;padding:10px 12px;border-radius:8px;font-size:12px;color:#1A5CA8;margin-bottom:16px;">
+            💡 选择您需要的服务类型，点击后填写预约信息，系统将为您匹配合适的医护人员。
+          </div>
+
+          <div class="service-type-card" onclick="openAppointmentForm('护理服务', 168)">
+            <div class="service-type-icon" style="background:#E8F8EE;">👩‍⚕️</div>
+            <div class="service-type-body">
+              <div class="service-type-name">护理服务</div>
+              <div class="service-type-desc">日常护理、生命体征监测、健康指导</div>
+            </div>
+            <div class="service-type-price">¥168 <span>/次</span></div>
+          </div>
+
+          <div class="service-type-card" onclick="openAppointmentForm('康复理疗', 298)">
+            <div class="service-type-icon" style="background:#FEF3C7;">🏃</div>
+            <div class="service-type-body">
+              <div class="service-type-name">康复理疗</div>
+              <div class="service-type-desc">康复训练、推拿按摩、功能恢复</div>
+            </div>
+            <div class="service-type-price">¥298 <span>/次</span></div>
+          </div>
+
+          <div class="service-type-card" onclick="openAppointmentForm('注射服务', 128)">
+            <div class="service-type-icon" style="background:#E8F2FC;">💉</div>
+            <div class="service-type-body">
+              <div class="service-type-name">注射服务</div>
+              <div class="service-type-desc">肌肉注射、皮下注射、静脉采血</div>
+            </div>
+            <div class="service-type-price">¥128 <span>/次</span></div>
+          </div>
+
+          <div class="service-type-card" onclick="openAppointmentForm('伤口换药', 220)">
+            <div class="service-type-icon" style="background:#FEE8E7;">🩹</div>
+            <div class="service-type-body">
+              <div class="service-type-name">伤口换药</div>
+              <div class="service-type-desc">术后换药、拆线、伤口评估与护理</div>
+            </div>
+            <div class="service-type-price">¥220 <span>/次</span></div>
+          </div>
+
+          <div class="service-type-card" onclick="openAppointmentForm('导尿护理', 260)">
+            <div class="service-type-icon" style="background:#F3E8FF;">🛏️</div>
+            <div class="service-type-body">
+              <div class="service-type-name">导尿护理</div>
+              <div class="service-type-desc">导尿管更换、膀胱冲洗、护理指导</div>
+            </div>
+            <div class="service-type-price">¥260 <span>/次</span></div>
+          </div>
+
+          <div class="service-type-card" onclick="openAppointmentForm('压疮护理', 380)">
+            <div class="service-type-icon" style="background:#FFF0E6;">🩺</div>
+            <div class="service-type-body">
+              <div class="service-type-name">压疮护理</div>
+              <div class="service-type-desc">压疮评估、清创换药、预防指导</div>
+            </div>
+            <div class="service-type-price">¥380 <span>/次</span></div>
+          </div>
+
+          <div class="service-type-card" onclick="openAppointmentForm('物理治疗', 350)">
+            <div class="service-type-icon" style="background:#E0F2FE;">🫁</div>
+            <div class="service-type-body">
+              <div class="service-type-name">物理治疗</div>
+              <div class="service-type-desc">电疗、热疗、光疗等物理因子治疗</div>
+            </div>
+            <div class="service-type-price">¥350 <span>/次</span></div>
+          </div>
+
+          <div class="service-type-card" onclick="openAppointmentForm('胃管护理', 200)">
+            <div class="service-type-icon" style="background:#E8F8EE;">🥣</div>
+            <div class="service-type-body">
+              <div class="service-type-name">胃管护理</div>
+              <div class="service-type-desc">胃管更换、鼻饲操作、护理指导</div>
+            </div>
+            <div class="service-type-price">¥200 <span>/次</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+
+    <!-- ==================== 购物车 ==================== -->
+    <div class="page" id="page-cart">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">购物车</span>
+        <span class="header-action" style="color:var(--danger);">清空</span>
+      </div>
+
+      <div class="section" style="margin-top:12px;">
+        <div class="order-card">
+          <div class="order-body">
+            <div class="order-img">🩻</div>
+            <div class="order-info">
+              <h4>欧姆龙电子血压计 U701</h4>
+              <p style="font-size:12px;color:var(--text-secondary);">数量：1</p>
+              <div class="order-price">¥299.00</div>
+            </div>
+          </div>
+          <div class="order-footer">
+            <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);">删除</button>
+            <div class="qty-ctrl">
+              <button class="qty-btn">−</button>
+              <span class="qty-num">1</span>
+              <button class="qty-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-body">
+            <div class="order-img" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);">🌡️</div>
+            <div class="order-info">
+              <h4>鱼跃红外体温计 YT-2</h4>
+              <p style="font-size:12px;color:var(--text-secondary);">数量：1</p>
+              <div class="order-price">¥159.00</div>
+            </div>
+          </div>
+          <div class="order-footer">
+            <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);">删除</button>
+            <div class="qty-ctrl">
+              <button class="qty-btn">−</button>
+              <span class="qty-num">1</span>
+              <button class="qty-btn">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部结算 -->
+      <div class="bottom-bar">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--primary);width:18px;height:18px;">
+          <span style="font-size:14px;">全选</span>
+        </label>
+        <div class="total-price">¥458.00 <span>合计</span></div>
+        <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('请先完成实名认证后下单')">结算(2)</button>
+      </div>
+    </div>
+
+    <!-- ==================== 订单页 ==================== -->
+    <div class="page" id="page-orders">
+      <div class="header">
+        <span class="header-title">我的订单</span>
+      </div>
+
+      <!-- 订单类型切换 -->
+      <div class="filter-tabs">
+        <div class="filter-tab active" onclick="filterOrderTab(this, 'equipment')">器械订单</div>
+        <div class="filter-tab" onclick="filterOrderTab(this, 'service')">服务订单</div>
+      </div>
+
+      <!-- 器械订单子Tab -->
+      <div class="filter-tabs" style="margin-top:8px;" id="equipSubTabs">
+        <div class="filter-tab active" onclick="filterOrderStatus(this)">全部</div>
+        <div class="filter-tab" onclick="filterOrderStatus(this)">待付款</div>
+        <div class="filter-tab" onclick="filterOrderStatus(this)">待发货</div>
+        <div class="filter-tab" onclick="filterOrderStatus(this)">配送中</div>
+        <div class="filter-tab" onclick="filterOrderStatus(this)">已完成</div>
+      </div>
+
+      <!-- 器械订单 -->
+      <div class="section" id="equipmentOrders">
+        <div class="order-card">
+          <div class="order-header">
+            <span>订单号：KH20260512001</span>
+            <span class="tag tag-orange">配送中</span>
+          </div>
+          <div class="order-body">
+            <div class="order-img">🩻</div>
+            <div class="order-info">
+              <h4>欧姆龙电子血压计 U701</h4>
+              <p>配送方式：同城配送 | 预计今日送达</p>
+              <div class="order-price">¥299.00</div>
+            </div>
+          </div>
+          <div class="order-footer">
+            <button class="btn btn-outline btn-sm" onclick="navigateTo('order-detail-equip')">订单详情</button>
+            <button class="btn btn-outline btn-sm">查看物流</button>
+            <button class="btn btn-primary btn-sm">确认收货</button>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-header">
+            <span>订单号：KH20260508002</span>
+            <span class="tag tag-green">已完成</span>
+          </div>
+          <div class="order-body">
+            <div class="order-img">🌡️</div>
+            <div class="order-info">
+              <h4>鱼跃红外体温计 YT-2</h4>
+              <p>配送方式：快递配送 | 已签收</p>
+              <div class="order-price">¥159.00</div>
+            </div>
+          </div>
+          <div class="order-footer">
+            <button class="btn btn-outline btn-sm" onclick="navigateTo('order-detail-equip')">订单详情</button>
+            <button class="btn btn-outline btn-sm">再次购买</button>
+            <button class="btn btn-outline btn-sm">评价</button>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-header">
+            <span>订单号：KH20260515005</span>
+            <span class="tag tag-blue">待发货</span>
+          </div>
+          <div class="order-body">
+            <div class="order-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);">🩸</div>
+            <div class="order-info">
+              <h4>罗氏血糖仪 卓越金采</h4>
+              <p>配送方式：快递配送 | 预计3天内发货</p>
+              <div class="order-price">¥568.00</div>
+            </div>
+          </div>
+          <div class="order-footer">
+            <button class="btn btn-outline btn-sm" onclick="navigateTo('order-detail-equip')">订单详情</button>
+            <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);">取消订单</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 服务订单子Tab -->
+      <div class="filter-tabs" style="margin-top:8px;display:none;" id="serviceSubTabs">
+        <div class="filter-tab active" onclick="filterOrderStatus(this)">全部</div>
+        <div class="filter-tab" onclick="filterOrderStatus(this)">待接单</div>
+        <div class="filter-tab" onclick="filterOrderStatus(this)">已接单</div>
+        <div class="filter-tab" onclick="filterOrderStatus(this)">服务中</div>
+        <div class="filter-tab" onclick="filterOrderStatus(this)">已完成</div>
+        <div class="filter-tab" onclick="filterOrderStatus(this)">已取消</div>
+      </div>
+
+      <!-- 服务订单 -->
+      <div class="section" id="serviceOrders" style="display:none;">
+        <div class="order-card">
+          <div class="order-header">
+            <span>订单号：KH20260513001</span>
+            <span class="tag tag-orange">待接单</span>
+          </div>
+          <div class="order-body">
+            <div class="order-img" style="background:#E8F8EE;">👩‍⚕️</div>
+            <div class="order-info">
+              <h4>护理服务</h4>
+              <p>预约时间：5月13日 上午 9:00-12:00</p>
+              <div class="order-price">¥168.00</div>
+            </div>
+          </div>
+          <div class="order-footer">
+            <button class="btn btn-outline btn-sm" onclick="navigateTo('order-detail-service')">订单详情</button>
+            <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="showToast('订单已取消')">取消订单</button>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-header">
+            <span>订单号：KH20260512002</span>
+            <span class="tag tag-blue">已接单</span>
+          </div>
+          <div class="order-body">
+            <div class="order-img" style="background:#E8F2FC;">💉</div>
+            <div class="order-info">
+              <h4>注射服务</h4>
+              <p>服务人员：张护士 | 预约时间：5月12日 下午</p>
+              <div class="order-price">¥128.00</div>
+            </div>
+          </div>
+          <div class="order-footer">
+            <button class="btn btn-outline btn-sm" onclick="navigateTo('order-detail-service')">订单详情</button>
+            <button class="btn btn-outline btn-sm">联系医护</button>
+            <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="showToast('订单已取消')">取消订单</button>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-header">
+            <span>订单号：KH20260511003</span>
+            <span class="tag tag-green">服务中</span>
+          </div>
+          <div class="order-body">
+            <div class="order-img" style="background:#FEF3C7;">🩹</div>
+            <div class="order-info">
+              <h4>伤口换药</h4>
+              <p>服务人员：王护师 | 服务时间：5月11日</p>
+              <div class="order-price">¥220.00</div>
+            </div>
+          </div>
+          <div class="order-footer">
+            <button class="btn btn-outline btn-sm" onclick="navigateTo('order-detail-service')">订单详情</button>
+            <button class="btn btn-outline btn-sm">联系医护</button>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-header">
+            <span>订单号：KH20260505004</span>
+            <span class="tag tag-green">已完成</span>
+          </div>
+          <div class="order-body">
+            <div class="order-img" style="background:#F3E8FF;">🏃</div>
+            <div class="order-info">
+              <h4>康复理疗</h4>
+              <p>服务人员：刘康复师 | 完成时间：5月5日</p>
+              <div class="order-price">¥298.00</div>
+            </div>
+          </div>
+          <div class="order-footer">
+            <button class="btn btn-outline btn-sm" onclick="navigateTo('order-detail-service')">订单详情</button>
+            <button class="btn btn-outline btn-sm">再次预约</button>
+            <button class="btn btn-outline btn-sm">评价</button>
+          </div>
+        </div>
+
+        <div class="order-card" style="opacity:0.65;">
+          <div class="order-header">
+            <span>订单号：KH20260503006</span>
+            <span class="tag tag-default">已取消</span>
+          </div>
+          <div class="order-body">
+            <div class="order-img" style="background:#FEE8E7;">🛏️</div>
+            <div class="order-info">
+              <h4>导尿护理</h4>
+              <p>取消时间：5月3日 | 原因：用户主动取消</p>
+              <div class="order-price" style="text-decoration:line-through;">¥260.00</div>
+            </div>
+          </div>
+          <div class="order-footer">
+            <button class="btn btn-outline btn-sm" onclick="navigateTo('order-detail-service')">订单详情</button>
+            <button class="btn btn-outline btn-sm">再次预约</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+
+    <!-- ==================== 我的页 ==================== -->
+    <div class="page" id="page-profile">
+      <!-- 个人信息卡片 -->
+      <div class="profile-card">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-info">
+          <div class="profile-name">张先生</div>
+          <div class="profile-status">
+            <span id="profileAuthStatus">⚠️ 未实名认证</span>
+          </div>
+        </div>
+        <span style="font-size:20px;opacity:0.7;">›</span>
+      </div>
+
+      <!-- 个人统计 -->
+      <div class="profile-stats">
+        <div class="profile-stat-item" onclick="switchTab('orders')">
+          <span class="profile-stat-num">5</span>
+          <span class="profile-stat-label">全部订单</span>
+        </div>
+        <div class="profile-stat-item" onclick="navigateTo('coupon-center')">
+          <span class="profile-stat-num">3</span>
+          <span class="profile-stat-label">优惠券</span>
+        </div>
+        <div class="profile-stat-item" onclick="navigateTo('health-record')">
+          <span class="profile-stat-num">1</span>
+          <span class="profile-stat-label">健康档案</span>
+        </div>
+        <div class="profile-stat-item" onclick="navigateTo('address-list')">
+          <span class="profile-stat-num">2</span>
+          <span class="profile-stat-label">收货地址</span>
+        </div>
+      </div>
+
+      <!-- 实名认证入口 -->
+      <div class="menu-list">
+        <div class="menu-item" onclick="navigateTo('realname-auth')">
+          <span class="menu-icon">🛡️</span>
+          <span class="menu-text">实名认证</span>
+          <span class="menu-badge" id="authBadge">待认证</span>
+          <span class="menu-arrow">›</span>
+        </div>
+      </div>
+
+      <!-- 功能菜单 -->
+      <div class="menu-list">
+        <div class="menu-item" onclick="navigateTo('health-record')">
+          <span class="menu-icon">📋</span>
+          <span class="menu-text">健康档案</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="navigateTo('address-list')">
+          <span class="menu-icon">📍</span>
+          <span class="menu-text">收货地址管理</span>
+          <span class="menu-arrow">›</span>
+        </div>
+      </div>
+
+      <!-- 设置菜单 -->
+      <div class="menu-list">
+        <div class="menu-item">
+          <span class="menu-icon">⚙️</span>
+          <span class="menu-text">设置</span>
+          <span class="menu-arrow">›</span>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:20px;color:var(--text-light);font-size:12px;">
+        康护到家 v2.0.0
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：商品详情 ==================== -->
+    <div class="page" id="page-product-detail">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">商品详情</span>
+        <span class="header-action" onclick="navigateTo('cart')">🛒</span>
+      </div>
+
+      <!-- 主图 -->
+      <div style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);height:280px;display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;">
+        🩻
+        <div style="position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.5);color:#FFF;font-size:11px;padding:3px 10px;border-radius:10px;">1/5</div>
+      </div>
+
+      <!-- 价格与标题 -->
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <div style="display:flex;align-items:baseline;gap:8px;">
+          <span style="font-size:26px;font-weight:700;color:var(--danger);">¥299</span>
+          <span style="font-size:14px;color:var(--text-light);text-decoration:line-through;">¥399</span>
+          <span style="font-size:11px;background:var(--danger-light);color:var(--danger);padding:2px 6px;border-radius:4px;font-weight:600;">省100元</span>
+        </div>
+        <h3 style="font-size:17px;font-weight:700;margin:10px 0 6px;">欧姆龙电子血压计 U701 上臂式全自动智能加压</h3>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.5;">日本原装芯片 · 智能加压 · 大屏显示 · 30组记忆值 · 误操作提示</p>
+        <div style="display:flex;gap:6px;margin-top:8px;">
+          <span class="tag tag-orange">同城配送 2h达</span>
+          <span class="tag tag-blue">快递配送</span>
+          <span class="tag tag-green">7天无理由</span>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:10px;font-size:12px;color:var(--text-light);">
+          <span>已售 3.2k</span>
+          <span>好评 98%</span>
+          <span>收藏 1.5k</span>
+        </div>
+      </div>
+
+      <!-- 商品规格 -->
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <h4 style="font-size:15px;font-weight:700;margin-bottom:12px;">📋 商品规格</h4>
+        <table class="spec-table">
+          <tr><th>品牌</th><td>欧姆龙 Omron</td></tr>
+          <tr><th>型号</th><td>U701</td></tr>
+          <tr><th>测量方式</th><td>上臂式</td></tr>
+          <tr><th>加压方式</th><td>智能加压</td></tr>
+          <tr><th>显示方式</th><td>LCD 数字显示</td></tr>
+          <tr><th>记忆组数</th><td>30组 × 2人</td></tr>
+          <tr><th>测量范围</th><td>0-299mmHg</td></tr>
+          <tr><th>精度</th><td>±3mmHg</td></tr>
+          <tr><th>电源</th><td>4节5号电池 / USB供电</td></tr>
+          <tr><th>产地</th><td>日本</td></tr>
+          <tr><th>保修</th><td>全国联保3年</td></tr>
+          <tr><th>医疗器械</th><td>辽食药监械(准)字2014第2200063号</td></tr>
+        </table>
+      </div>
+
+      <!-- 商品详情长图 -->
+      <div class="detail-long-img">
+        <div class="img-section">
+          <h4>✨ 产品亮点</h4>
+          <div class="img-placeholder">🩻</div>
+          <div class="img-text">采用日本原装芯片，Intellisense智能加压技术，自动调节加压力度，测量更舒适精准。大屏LCD显示，数字清晰易读，老年人也能轻松使用。</div>
+        </div>
+        <div class="img-section">
+          <h4>📊 智能测量</h4>
+          <div class="img-placeholder" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);">📈</div>
+          <div class="img-text">30组记忆值存储，支持2人独立记录。血压水平指示器，WHO血压分类一目了然。不规则心跳检测，守护心血管健康。</div>
+        </div>
+        <div class="img-section">
+          <h4>🎁 包装清单</h4>
+          <div class="img-placeholder" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">📦</div>
+          <div class="img-text">血压计主机 × 1、臂带 × 1、4节5号电池 × 1组、说明书 × 1、保修卡 × 1、合格证 × 1</div>
+        </div>
+      </div>
+
+      <!-- 数量 -->
+      <div style="background:#FFF;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-weight:600;">购买数量</span>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <span class="qty-num" id="qtyNum">1</span>
+          <button class="qty-btn" onclick="changeQty(1)">＋</button>
+        </div>
+      </div>
+
+      <!-- 底部购买 -->
+      <div class="bottom-bar">
+        <button class="btn btn-outline btn-sm" style="flex-shrink:0;border-color:var(--primary);color:var(--primary);" onclick="showToast('已加入购物车')">🛒 加入购物车</button>
+        <div class="total-price">¥299.00 <span>合计</span></div>
+        <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('请先完成实名认证后下单')">立即购买</button>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：服务详情 ==================== -->
+    <div class="page" id="page-service-detail">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">服务详情</span>
+        <span class="header-action">收藏</span>
+      </div>
+
+      <!-- 医护人员信息 -->
+      <div style="background:#FFF;padding:16px;margin-bottom:12px;display:flex;gap:12px;align-items:center;">
+        <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;font-size:30px;">👩‍⚕️</div>
+        <div style="flex:1;">
+          <h3 style="font-size:17px;font-weight:700;">李护士</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">执业护士 · 10年临床经验</p>
+          <p style="font-size:12px;color:var(--warning);">⭐ 4.9 · 已服务 2,386 次</p>
+        </div>
+        <span class="tag tag-green">在线</span>
+      </div>
+
+      <!-- 服务信息 -->
+      <div style="background:#FFF;padding:16px;margin-bottom:12px;">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;">静脉采血 + 送检服务</h3>
+        <div style="font-size:24px;font-weight:700;color:var(--danger);margin-bottom:10px;">¥168 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">/ 次</span></div>
+        <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">
+          服务内容：执业护士上门进行静脉采血，样本送检至合作第三方医学检验实验室，48小时内出具电子报告，含报告解读服务。
+        </p>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+          <span class="tag tag-blue">含耗材</span>
+          <span class="tag tag-blue">上门服务</span>
+          <span class="tag tag-blue">报告解读</span>
+        </div>
+      </div>
+
+      <!-- 预约时间 -->
+      <div style="background:#FFF;padding:16px;margin-bottom:12px;">
+        <h4 style="font-size:15px;font-weight:700;margin-bottom:10px;">选择预约时间</h4>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" style="border-color:var(--primary);background:var(--primary-light);">5月13日 上午</button>
+          <button class="btn btn-outline btn-sm">5月13日 下午</button>
+          <button class="btn btn-outline btn-sm">5月14日 上午</button>
+          <button class="btn btn-outline btn-sm">5月14日 下午</button>
+          <button class="btn btn-outline btn-sm">5月15日 上午</button>
+        </div>
+      </div>
+
+      <!-- 服务地址 -->
+      <div style="background:#FFF;padding:16px;margin-bottom:12px;">
+        <h4 style="font-size:15px;font-weight:700;margin-bottom:10px;">服务地址</h4>
+        <div style="display:flex;align-items:center;gap:8px;padding:12px;background:#F5F6FA;border-radius:8px;cursor:pointer;">
+          <span style="font-size:20px;">📍</span>
+          <div style="flex:1;">
+            <p style="font-weight:600;font-size:14px;">张先生 138****5678</p>
+            <p style="font-size:12px;color:var(--text-secondary);">北京市朝阳区某某街道某某小区 3号楼 2单元 1501</p>
+          </div>
+          <span style="color:var(--text-light);">›</span>
+        </div>
+      </div>
+
+      <!-- 底部 -->
+      <div class="bottom-bar">
+        <div class="total-price">¥168.00 <span>预计费用</span></div>
+        <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('请先完成实名认证后预约')">立即预约</button>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：发布需求 ==================== -->
+    <div class="page" id="page-post-need">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">发布医护需求</span>
+      </div>
+
+      <div style="background:#FFF;margin:12px 16px;border-radius:var(--radius);padding:16px;">
+        <div style="background:#FFF8E1;padding:10px 12px;border-radius:8px;font-size:12px;color:#B45309;margin-bottom:16px;">
+          💡 发布需求后，平台认证的医护人员会主动接单，您可以选择合适的医护人员进行服务。
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><span class="required">*</span> 需求类型</label>
+          <select class="form-select">
+            <option>请选择需求类型</option>
+            <option>护理服务</option>
+            <option>康复理疗</option>
+            <option>注射输液</option>
+            <option>换药拆线</option>
+            <option>导尿护理</option>
+            <option>压疮护理</option>
+            <option>其他</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><span class="required">*</span> 需求描述</label>
+          <textarea class="form-textarea" placeholder="请详细描述您的需求，包括病情简述、需要的服务内容、特殊要求等..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><span class="required">*</span> 服务地址</label>
+          <div class="form-input" style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text-secondary);">
+            📍 请选择服务地址
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><span class="required">*</span> 期望服务时间</label>
+          <input type="date" class="form-input" value="2026-05-13">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">预算范围（可选）</label>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <input type="number" class="form-input" placeholder="最低预算" style="flex:1;">
+            <span>—</span>
+            <input type="number" class="form-input" placeholder="最高预算" style="flex:1;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">上传相关资料（可选）</label>
+          <div class="upload-area">
+            <div class="upload-box">＋</div>
+            <div class="upload-box">＋</div>
+            <div class="upload-box">＋</div>
+          </div>
+          <p style="font-size:11px;color:var(--text-light);margin-top:6px;">可上传病历、处方、检验报告等图片，最多9张</p>
+        </div>
+
+        <button class="btn btn-primary" style="margin-top:10px;" onclick="showToast('需求发布成功！请等待医护人员接单')">发布需求</button>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：需求大厅 ==================== -->
+    <div class="page" id="page-need-hall">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">需求大厅</span>
+      </div>
+
+      <div class="section" style="margin-top:12px;">
+        <div class="need-card">
+          <div class="need-header">
+            <div class="need-user">👤 李女士 <span class="tag tag-orange">急</span></div>
+            <div class="need-time">5分钟前</div>
+          </div>
+          <div class="need-content">家中老人需要定期更换导尿管，求有经验的护士上门服务，最好能在本周内完成首次服务。</div>
+          <div class="need-tags">
+            <span class="tag tag-blue">导尿护理</span>
+            <span class="tag tag-blue">老人护理</span>
+          </div>
+          <div class="need-footer">
+            <span>📍 北京市海淀区</span>
+            <span>预算：<span class="need-budget"><span>¥</span>200-300</span></span>
+          </div>
+        </div>
+
+        <div class="need-card">
+          <div class="need-header">
+            <div class="need-user">👤 王先生</div>
+            <div class="need-time">30分钟前</div>
+          </div>
+          <div class="need-content">术后出院需要护士上门换药，腹部手术切口，需要执业护士操作，隔天换药一次。</div>
+          <div class="need-tags">
+            <span class="tag tag-blue">术后换药</span>
+            <span class="tag tag-blue">长期需求</span>
+          </div>
+          <div class="need-footer">
+            <span>📍 北京市朝阳区</span>
+            <span>预算：<span class="need-budget"><span>¥</span>200</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：实名认证 ==================== -->
+    <div class="page" id="page-realname-auth">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">实名认证</span>
+      </div>
+
+      <!-- 步骤条 -->
+      <div class="steps" style="background:#FFF;margin-bottom:12px;">
+        <div class="step active">
+          <div class="step-num">1</div>
+          <span>填写信息</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <span>人脸识别</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <span>认证完成</span>
+        </div>
+      </div>
+
+      <div style="background:#FFF;margin:0 16px;border-radius:var(--radius);padding:16px;">
+        <div style="background:#E8F2FC;padding:10px 12px;border-radius:8px;font-size:12px;color:#1A5CA8;margin-bottom:16px;">
+          🔒 根据国家法律法规，使用医疗服务需进行实名认证。您的信息将严格加密保存。
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><span class="required">*</span> 真实姓名</label>
+          <input type="text" class="form-input" placeholder="请输入身份证上的姓名">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><span class="required">*</span> 身份证号</label>
+          <input type="text" class="form-input" placeholder="请输入18位身份证号码">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><span class="required">*</span> 手机号</label>
+          <input type="tel" class="form-input" placeholder="请输入本人手机号">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><span class="required">*</span> 身份证照片</label>
+          <div class="upload-area">
+            <div class="upload-box">📷<br><span style="font-size:10px;">人像面</span></div>
+            <div class="upload-box">📷<br><span style="font-size:10px;">国徽面</span></div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;margin:16px 0;font-size:12px;color:var(--text-secondary);">
+          <input type="checkbox" id="agreeAuth" checked style="accent-color:var(--primary);">
+          <label for="agreeAuth">同意《用户服务协议》和《隐私政策》</label>
+        </div>
+
+        <button class="btn btn-primary" onclick="submitAuth()">提交认证</button>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：健康档案 ==================== -->
+    <div class="page" id="page-health-record">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">健康档案</span>
+        <span class="header-action" onclick="showToast('编辑模式')">编辑</span>
+      </div>
+
+      <div class="section" style="margin-top:12px;">
+        <!-- 基本信息 -->
+        <div class="record-card">
+          <div class="record-header">
+            <span class="record-title">👤 基本信息</span>
+          </div>
+          <div class="record-row"><span>姓名</span><strong>张先生</strong></div>
+          <div class="record-row"><span>性别</span><strong>男</strong></div>
+          <div class="record-row"><span>出生日期</span><strong>1985-06-15</strong></div>
+          <div class="record-row"><span>年龄</span><strong>41 岁</strong></div>
+          <div class="record-row"><span>血型</span><strong>A 型</strong></div>
+        </div>
+
+        <!-- 健康指标 -->
+        <div class="record-card">
+          <div class="record-header">
+            <span class="record-title">📊 健康指标</span>
+            <span style="font-size:12px;color:var(--text-light);">更新于 2026-05-10</span>
+          </div>
+          <div class="record-row"><span>身高</span><strong>175 cm</strong></div>
+          <div class="record-row"><span>体重</span><strong>72 kg</strong></div>
+          <div class="record-row"><span>BMI</span><strong>23.5</strong></div>
+          <div class="record-row"><span>血压</span><strong>125/82 mmHg</strong></div>
+          <div class="record-row"><span>血糖（空腹）</span><strong>5.2 mmol/L</strong></div>
+        </div>
+
+        <!-- 病史信息 -->
+        <div class="record-card">
+          <div class="record-header">
+            <span class="record-title">🏥 病史信息</span>
+          </div>
+          <div class="record-row"><span>过敏史</span><strong>青霉素过敏</strong></div>
+          <div class="record-row"><span>既往病史</span><strong>高血压（轻度）</strong></div>
+          <div class="record-row"><span>手术史</span><strong>阑尾切除术（2018年）</strong></div>
+          <div class="record-row"><span>家族病史</span><strong>糖尿病（父亲）</strong></div>
+          <div class="record-row"><span>长期用药</span><strong>硝苯地平 30mg/日</strong></div>
+        </div>
+
+        <!-- 紧急联系人 -->
+        <div class="record-card">
+          <div class="record-header">
+            <span class="record-title">🆘 紧急联系人</span>
+          </div>
+          <div class="record-row"><span>姓名</span><strong>张女士（配偶）</strong></div>
+          <div class="record-row"><span>关系</span><strong>配偶</strong></div>
+          <div class="record-row"><span>手机号</span><strong>139****6789</strong></div>
+        </div>
+
+        <button class="btn btn-outline" style="margin-top:10px;" onclick="showToast('健康档案已更新')">保存档案</button>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：地址管理 ==================== -->
+    <div class="page" id="page-address-list">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">收货地址</span>
+        <span class="header-action">＋ 新增</span>
+      </div>
+
+      <div class="section" style="margin-top:12px;">
+        <div class="record-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong>张先生</strong>
+            <span style="font-size:12px;color:var(--primary);">默认</span>
+          </div>
+          <p style="font-size:14px;margin-bottom:4px;">138****5678</p>
+          <p style="font-size:13px;color:var(--text-secondary);">北京市朝阳区某某街道某某小区 3号楼 2单元 1501</p>
+          <div style="display:flex;gap:10px;margin-top:10px;font-size:12px;color:var(--text-secondary);">
+            <span style="cursor:pointer;color:var(--primary);">设为默认</span>
+            <span style="cursor:pointer;">编辑</span>
+            <span style="cursor:pointer;color:var(--danger);">删除</span>
+          </div>
+        </div>
+
+        <div class="record-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong>张先生（公司）</strong>
+          </div>
+          <p style="font-size:14px;margin-bottom:4px;">010-****1234</p>
+          <p style="font-size:13px;color:var(--text-secondary);">北京市海淀区中关村某某大厦 A座 12层</p>
+          <div style="display:flex;gap:10px;margin-top:10px;font-size:12px;color:var(--text-secondary);">
+            <span style="cursor:pointer;color:var(--primary);">设为默认</span>
+            <span style="cursor:pointer;">编辑</span>
+            <span style="cursor:pointer;color:var(--danger);">删除</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：领券中心 ==================== -->
+    <div class="page" id="page-coupon-center">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">领券中心</span>
+      </div>
+
+      <div class="section" style="margin-top:12px;">
+        <div class="coupon-card">
+          <div class="coupon-left">
+            <div class="coupon-amount">¥30</div>
+            <div class="coupon-unit">满200可用</div>
+          </div>
+          <div class="coupon-right">
+            <div>
+              <div class="coupon-name">新人专享券</div>
+              <div class="coupon-condition">全场商品/服务可用</div>
+              <div class="coupon-time">2024-03-01 ~ 2024-06-30</div>
+            </div>
+            <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('🎉 领取成功！')">领取</button>
+          </div>
+        </div>
+
+        <div class="coupon-card">
+          <div class="coupon-left" style="background:linear-gradient(135deg, #FF9500, #FFBA54);">
+            <div class="coupon-amount">8折</div>
+            <div class="coupon-unit">服务专享</div>
+          </div>
+          <div class="coupon-right">
+            <div>
+              <div class="coupon-name">医护服务折扣券</div>
+              <div class="coupon-condition">仅限上门医护服务</div>
+              <div class="coupon-time">2024-03-15 ~ 2024-05-15</div>
+            </div>
+            <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('🎉 领取成功！')">领取</button>
+          </div>
+        </div>
+
+        <div class="coupon-card">
+          <div class="coupon-left" style="background:linear-gradient(135deg, #34C759, #6DD89E);">
+            <div class="coupon-amount">¥50</div>
+            <div class="coupon-unit">满399可用</div>
+          </div>
+          <div class="coupon-right">
+            <div>
+              <div class="coupon-name">医疗器械专属券</div>
+              <div class="coupon-condition">仅限医疗器械品类</div>
+              <div class="coupon-time">2024-03-01 ~ 2024-04-30</div>
+            </div>
+            <button class="btn btn-outline btn-sm" style="flex-shrink:0;color:var(--text-light);border-color:var(--border);">已领取</button>
+          </div>
+        </div>
+
+        <div class="coupon-card">
+          <div class="coupon-left" style="background:linear-gradient(135deg, #AF52DE, #D17BFF);">
+            <div class="coupon-amount">¥20</div>
+            <div class="coupon-unit">满100可用</div>
+          </div>
+          <div class="coupon-right">
+            <div>
+              <div class="coupon-name">检测仪器优惠券</div>
+              <div class="coupon-condition">仅限检测仪器品类</div>
+              <div class="coupon-time">2024-04-01 ~ 2024-05-31</div>
+            </div>
+            <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('🎉 领取成功！')">领取</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：消息通知 ==================== -->
+    <div class="page" id="page-notifications">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">消息通知</span>
+        <span class="header-action" onclick="showToast('已全部标为已读')">全部已读</span>
+      </div>
+
+      <div class="section" style="margin-top:12px;">
+        <div class="notification-item unread">
+          <div class="notification-icon" style="background:#E8F2FC;">📦</div>
+          <div class="notification-body">
+            <div class="notification-title">订单配送中</div>
+            <div class="notification-desc">您的订单 KH20260512001 已由快递员取件，预计今日送达</div>
+            <div class="notification-time">10分钟前</div>
+          </div>
+        </div>
+
+        <div class="notification-item unread">
+          <div class="notification-icon" style="background:#E8F8EE;">👨‍⚕️</div>
+          <div class="notification-body">
+            <div class="notification-title">服务提醒</div>
+            <div class="notification-desc">您预约的静脉采血服务将于明天上午进行，请保持手机畅通</div>
+            <div class="notification-time">2小时前</div>
+          </div>
+        </div>
+
+        <div class="notification-item">
+          <div class="notification-icon" style="background:#FFF0E6;">🎫</div>
+          <div class="notification-body">
+            <div class="notification-title">优惠券到账</div>
+            <div class="notification-desc">您有一张满200减30元优惠券已到账，快来使用吧！</div>
+            <div class="notification-time">昨天</div>
+          </div>
+        </div>
+
+        <div class="notification-item">
+          <div class="notification-icon" style="background:#F3E8FF;">🏥</div>
+          <div class="notification-body">
+            <div class="notification-title">健康提醒</div>
+            <div class="notification-desc">根据您的健康档案，建议您定期监测血压，保持健康饮食</div>
+            <div class="notification-time">3天前</div>
+          </div>
+        </div>
+
+        <div class="notification-item">
+          <div class="notification-icon" style="background:#FEE8E7;">🔔</div>
+          <div class="notification-body">
+            <div class="notification-title">系统通知</div>
+            <div class="notification-desc">康护到家 v2.0 已更新，新增领券中心和健康提醒功能</div>
+            <div class="notification-time">1周前</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：预约服务填写 ==================== -->
+    <div class="page" id="page-appointment-form">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">预约服务</span>
+      </div>
+
+      <div style="background:#FFF;margin:12px 16px;border-radius:var(--radius);padding:16px;">
+        <div style="background:#E8F2FC;padding:10px 12px;border-radius:8px;font-size:12px;color:#1A5CA8;margin-bottom:16px;">
+          💡 请填写您的预约信息，提交后系统将为您匹配合适的医护人员。
+        </div>
+
+        <!-- 已选服务类型展示（不可修改） -->
+        <div class="form-group">
+          <label class="form-label">服务类型</label>
+          <div id="apptSelectedType" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--primary-light);border-radius:var(--radius-sm);border:1px solid var(--primary);">
+            <span id="apptTypeIcon" style="font-size:20px;">👩‍⚕️</span>
+            <div>
+              <div id="apptTypeName" style="font-size:14px;font-weight:700;color:var(--primary);">护理服务</div>
+              <div id="apptTypePrice" style="font-size:12px;color:var(--text-secondary);">¥168/次</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">服务描述</label>
+          <textarea class="form-textarea" placeholder="请补充您的具体需求说明，如病情简述、特殊要求等（可选）..." style="min-height:80px;"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><span class="required">*</span> 期望服务时间</label>
+          <input type="date" class="form-input" value="2026-05-13">
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="btn btn-outline btn-sm appt-time-btn" onclick="selectApptTime(this)" style="border-color:var(--primary);background:var(--primary-light);">上午 9:00-12:00</button>
+            <button class="btn btn-outline btn-sm appt-time-btn" onclick="selectApptTime(this)">下午 14:00-17:00</button>
+            <button class="btn btn-outline btn-sm appt-time-btn" onclick="selectApptTime(this)">晚上 17:00-20:00</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><span class="required">*</span> 服务地址</label>
+          <div class="form-input" style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text-secondary);" onclick="navigateTo('address-list')">
+            📍 请选择服务地址
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">上传相关资料（可选）</label>
+          <div class="upload-area">
+            <div class="upload-box">＋</div>
+            <div class="upload-box">＋</div>
+            <div class="upload-box">＋</div>
+          </div>
+          <p style="font-size:11px;color:var(--text-light);margin-top:6px;">可上传病历、处方、检验报告等图片，最多9张</p>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border);margin-top:8px;">
+          <span style="font-weight:600;">预计费用</span>
+          <span style="font-size:22px;font-weight:700;color:var(--danger);" id="apptPrice">¥168</span>
+        </div>
+
+        <button class="btn btn-primary" style="margin-top:8px;" onclick="showToast('预约服务已提交，系统将为您匹配医护人员')">确认预约</button>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：分类商品列表 ==================== -->
+    <div class="page" id="page-category-list">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title" id="categoryTitle">检测仪器</span>
+      </div>
+
+      <div class="filter-tabs" style="overflow-x:auto;flex-wrap:nowrap;">
+        <div class="filter-tab" onclick="switchCategoryTab(this, '检测仪器')">检测仪器</div>
+        <div class="filter-tab" onclick="switchCategoryTab(this, '康复辅具')">康复辅具</div>
+        <div class="filter-tab" onclick="switchCategoryTab(this, '护理耗材')">护理耗材</div>
+        <div class="filter-tab" onclick="switchCategoryTab(this, '呼吸氧疗')">呼吸氧疗</div>
+        <div class="filter-tab" onclick="switchCategoryTab(this, '出行辅具')">出行辅具</div>
+      </div>
+
+      <div class="section" style="margin-top:12px;">
+        <div class="waterfall-grid" id="categoryProductGrid">
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:150px;"><span class="product-badge">热销</span>🩻</div>
+            <div class="product-info">
+              <div class="product-name">欧姆龙电子血压计 U701</div>
+              <div class="product-price"><span>¥</span>299</div>
+              <div class="product-sales">已售 3.2k</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:130px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);"><span class="product-badge">热销</span>🩸</div>
+            <div class="product-info">
+              <div class="product-name">罗氏血糖仪 卓越金采</div>
+              <div class="product-price"><span>¥</span>568</div>
+              <div class="product-sales">已售 2.1k</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:140px;background:linear-gradient(135deg,#fce7f3,#fbcfe8);"><span class="product-badge">同城</span>🌡️</div>
+            <div class="product-info">
+              <div class="product-name">鱼跃红外体温计 YT-2</div>
+              <div class="product-price"><span>¥</span>159</div>
+              <div class="product-sales">已售 1.8k</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:150px;background:linear-gradient(135deg,#e0f2fe,#bae6fd);">💊</div>
+            <div class="product-info">
+              <div class="product-name">鱼跃雾化器 403M 家用</div>
+              <div class="product-price"><span>¥</span>459</div>
+              <div class="product-sales">已售 856</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:130px;background:linear-gradient(135deg,#fef3c7,#fde68a);">🩺</div>
+            <div class="product-info">
+              <div class="product-name">鱼跃听诊器 单面专业款</div>
+              <div class="product-price"><span>¥</span>128</div>
+              <div class="product-sales">已售 980</div>
+            </div>
+          </div>
+          <div class="product-card-full" onclick="navigateTo('product-detail')">
+            <div class="product-img" style="height:140px;background:linear-gradient(135deg,#ede9fe,#c4b5fd);">💉</div>
+            <div class="product-info">
+              <div class="product-name">三诺血糖试纸 50条装</div>
+              <div class="product-price"><span>¥</span>89</div>
+              <div class="product-sales">已售 4.3k</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：器械订单详情 ==================== -->
+    <div class="page" id="page-order-detail-equip">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">订单详情</span>
+      </div>
+
+      <div style="background:linear-gradient(135deg,var(--primary),#5BA0F5);padding:16px;color:#FFF;">
+        <div style="font-size:16px;font-weight:700;">配送中</div>
+        <div style="font-size:12px;opacity:0.85;margin-top:4px;">您的包裹正在配送中，请保持手机畅通</div>
+      </div>
+
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">物流信息</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:20px;">🚚</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;">顺丰速运 SF1234567890</div>
+            <div style="font-size:12px;color:var(--text-secondary);">2024-05-12 14:30 快递员已取件，预计今日送达</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <div style="display:flex;gap:12px;">
+          <div class="order-img">🩻</div>
+          <div style="flex:1;">
+            <div style="font-weight:600;">欧姆龙电子血压计 U701</div>
+            <div style="font-size:12px;color:var(--text-secondary);">数量：1 · 同城配送</div>
+          </div>
+          <div style="font-weight:700;color:var(--danger);">¥299.00</div>
+        </div>
+      </div>
+
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <div class="record-row"><span>订单号</span><strong>KH20260512001</strong></div>
+        <div class="record-row"><span>下单时间</span><strong>2024-05-12 10:30</strong></div>
+        <div class="record-row"><span>支付方式</span><strong>微信支付</strong></div>
+        <div class="record-row"><span>商品金额</span><strong>¥299.00</strong></div>
+        <div class="record-row"><span>运费</span><strong>¥0.00</strong></div>
+        <div class="record-row"><span>实付金额</span><strong style="color:var(--danger);">¥299.00</strong></div>
+      </div>
+
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">收货地址</div>
+        <div style="font-size:14px;font-weight:600;">张先生 138****5678</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">北京市朝阳区某某街道某某小区 3号楼 2单元 1501</div>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：服务订单详情 ==================== -->
+    <div class="page" id="page-order-detail-service">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">订单详情</span>
+      </div>
+
+      <div style="background:linear-gradient(135deg,#FF9500,#FFBA54);padding:16px;color:#FFF;">
+        <div style="font-size:16px;font-weight:700;">待接单</div>
+        <div style="font-size:12px;opacity:0.85;margin-top:4px;">已提交预约，等待医护人员接单</div>
+      </div>
+
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">服务信息</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:48px;height:48px;border-radius:12px;background:#E8F8EE;display:flex;align-items:center;justify-content:center;font-size:24px;">👩‍⚕️</div>
+          <div style="flex:1;">
+            <div style="font-weight:700;">护理服务</div>
+            <div style="font-size:12px;color:var(--text-secondary);">日常护理、生命体征监测、健康指导</div>
+          </div>
+          <div style="font-weight:700;color:var(--danger);">¥168.00</div>
+        </div>
+      </div>
+
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">预约时间</div>
+        <div style="font-size:14px;font-weight:600;">2024年5月13日 上午 9:00-12:00</div>
+      </div>
+
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">服务地址</div>
+        <div style="font-size:14px;font-weight:600;">张先生 138****5678</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">北京市朝阳区某某街道某某小区 3号楼 2单元 1501</div>
+      </div>
+
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <div class="record-row"><span>订单号</span><strong>KH20260513001</strong></div>
+        <div class="record-row"><span>下单时间</span><strong>2024-05-12 20:00</strong></div>
+        <div class="record-row"><span>支付方式</span><strong>微信支付</strong></div>
+        <div class="record-row"><span>服务费用</span><strong>¥168.00</strong></div>
+        <div class="record-row"><span>实付金额</span><strong style="color:var(--danger);">¥168.00</strong></div>
+      </div>
+
+      <!-- 服务进度 -->
+      <div style="background:#FFF;padding:16px;margin-bottom:10px;">
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">服务进度</div>
+        <div style="padding-left:16px;border-left:2px solid var(--border);">
+          <div style="padding:8px 0 8px 16px;position:relative;">
+            <div style="position:absolute;left:-7px;top:12px;width:12px;height:12px;border-radius:50%;background:var(--primary);"></div>
+            <div style="font-size:13px;font-weight:600;">用户提交预约</div>
+            <div style="font-size:11px;color:var(--text-light);">2024-05-12 20:00 · 已支付 ¥168.00</div>
+          </div>
+          <div style="padding:8px 0 8px 16px;position:relative;">
+            <div style="position:absolute;left:-7px;top:12px;width:12px;height:12px;border-radius:50%;background:var(--border);"></div>
+            <div style="font-size:13px;color:var(--text-light);">等待医护接单</div>
+            <div style="font-size:11px;color:var(--text-light);">进行中...</div>
+          </div>
+          <div style="padding:8px 0 8px 16px;position:relative;">
+            <div style="position:absolute;left:-7px;top:12px;width:12px;height:12px;border-radius:50%;background:var(--border);"></div>
+            <div style="font-size:13px;color:var(--text-light);">医护上门服务</div>
+          </div>
+          <div style="padding:8px 0 8px 16px;position:relative;">
+            <div style="position:absolute;left:-7px;top:12px;width:12px;height:12px;border-radius:50%;background:var(--border);"></div>
+            <div style="font-size:13px;color:var(--text-light);">服务完成</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部操作 -->
+      <div class="bottom-bar">
+        <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="showToast('订单已取消')">取消订单</button>
+        <button class="btn btn-outline btn-sm">联系客服</button>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：搜索 ==================== -->
+    <div class="page" id="page-search">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <input type="text" class="form-input" placeholder="搜索医疗器械、医护服务..." style="flex:1;height:36px;border-radius:20px;font-size:14px;" autofocus>
+      </div>
+
+      <div class="section" style="margin-top:12px;">
+        <div style="margin-bottom:20px;">
+          <div class="section-header">
+            <span class="section-title" style="font-size:15px;">🔥 热门搜索</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="tag tag-blue" style="cursor:pointer;padding:6px 12px;font-size:13px;">血压计</span>
+            <span class="tag tag-orange" style="cursor:pointer;padding:6px 12px;font-size:13px;">上门打针</span>
+            <span class="tag tag-green" style="cursor:pointer;padding:6px 12px;font-size:13px;">血糖仪</span>
+            <span class="tag tag-blue" style="cursor:pointer;padding:6px 12px;font-size:13px;">康复训练</span>
+            <span class="tag tag-red" style="cursor:pointer;padding:6px 12px;font-size:13px;">雾化器</span>
+            <span class="tag tag-orange" style="cursor:pointer;padding:6px 12px;font-size:13px;">伤口换药</span>
+            <span class="tag tag-green" style="cursor:pointer;padding:6px 12px;font-size:13px;">轮椅</span>
+            <span class="tag tag-blue" style="cursor:pointer;padding:6px 12px;font-size:13px;">中医推拿</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-header">
+            <span class="section-title" style="font-size:15px;">📋 历史搜索</span>
+            <span class="section-more" style="font-size:12px;color:var(--text-light);cursor:pointer;" onclick="showToast('搜索历史已清空')">🗑️ 清空</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="padding:12px 0;border-bottom:1px solid #f5f5f5;font-size:14px;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;gap:8px;">
+              <span>🕐</span> 血压计
+            </div>
+            <div style="padding:12px 0;border-bottom:1px solid #f5f5f5;font-size:14px;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;gap:8px;">
+              <span>🕐</span> 上门护理
+            </div>
+            <div style="padding:12px 0;font-size:14px;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;gap:8px;">
+              <span>🕐</span> 血糖试纸
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-container -->
+
+  <!-- Tab Bar -->
+  <div class="tab-bar" id="tabBar">
+    <div class="tab-item active" onclick="switchTab('home')" data-tab="home">
+      <span class="tab-icon">🏠</span>
+      <span>首页</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('service')" data-tab="service">
+      <span class="tab-icon">👨‍⚕️</span>
+      <span>服务</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('orders')" data-tab="orders">
+      <span class="tab-icon">📋</span>
+      <span class="tab-dot"></span>
+      <span>订单</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('profile')" data-tab="profile">
+      <span class="tab-icon">👤</span>
+      <span>我的</span>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== 页面导航系统 ==========
+const pageStack = [];
+const mainPages = ['home', 'service', 'orders', 'profile'];
+const subPages = ['product-detail', 'service-detail', 'cart', 'post-need', 'need-hall', 'realname-auth', 'health-record', 'address-list', 'coupon-center', 'notifications', 'search', 'appointment-form', 'category-list', 'order-detail-equip', 'order-detail-service'];
+
+function showPage(pageId, isBack) {
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active', 'back-anim');
+  });
+  const page = document.getElementById('page-' + pageId);
+  if (page) {
+    if (isBack) page.classList.add('back-anim');
+    page.classList.add('active');
+  }
+  document.getElementById('pageContainer').scrollTop = 0;
+
+  // 子页面隐藏Tab栏，主页面显示
+  if (subPages.some(p => pageId.includes(p))) {
+    document.getElementById('tabBar').style.display = 'none';
+  } else {
+    document.getElementById('tabBar').style.display = 'flex';
+  }
+}
+
+function navigateTo(pageId, param) {
+  const currentActive = document.querySelector('.page.active');
+  if (currentActive) {
+    pageStack.push(currentActive.id.replace('page-', ''));
+  }
+  showPage(pageId, false);
+
+  if (mainPages.includes(pageId)) {
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+    const tab = document.querySelector(`.tab-item[data-tab="${pageId}"]`);
+    if (tab) tab.classList.add('active');
+  }
+
+  // 分类列表页 - 设置标题和激活对应标签
+  if (pageId === 'category-list' && param) {
+    const titleEl = document.getElementById('categoryTitle');
+    if (titleEl) titleEl.textContent = param;
+    document.querySelectorAll('#page-category-list .filter-tab').forEach(tab => {
+      tab.classList.remove('active');
+      if (tab.textContent.trim() === param) tab.classList.add('active');
+    });
+  }
+}
+
+// ========== 预约服务 - 从卡片带参数跳转 ==========
+function openAppointmentForm(typeName, price) {
+  navigateTo('appointment-form');
+  // 设置已选服务类型
+  const nameEl = document.getElementById('apptTypeName');
+  const priceEl = document.getElementById('apptTypePrice');
+  const priceDisplay = document.getElementById('apptPrice');
+  if (nameEl) nameEl.textContent = typeName;
+  if (priceEl) priceEl.textContent = '¥' + price + '/次';
+  if (priceDisplay) priceDisplay.textContent = '¥' + price;
+}
+
+// ========== 分类列表页切换Tab ==========
+function switchCategoryTab(el, categoryName) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const titleEl = document.getElementById('categoryTitle');
+  if (titleEl) titleEl.textContent = categoryName;
+}
+
+function switchTab(tabName) {
+  pageStack.length = 0;
+  showPage(tabName, false);
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  const tab = document.querySelector(`.tab-item[data-tab="${tabName}"]`);
+  if (tab) tab.classList.add('active');
+  document.getElementById('tabBar').style.display = 'flex';
+}
+
+function goBack() {
+  if (pageStack.length > 0) {
+    const prevPage = pageStack.pop();
+    showPage(prevPage, true);
+    if (mainPages.includes(prevPage)) {
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      const tab = document.querySelector(`.tab-item[data-tab="${prevPage}"]`);
+      if (tab) tab.classList.add('active');
+    }
+  } else {
+    switchTab('home');
+  }
+}
+
+// ========== Banner Carousel ==========
+let bannerIndex = 0;
+const bannerCount = 3;
+
+function slideBanner() {
+  bannerIndex = (bannerIndex + 1) % bannerCount;
+  const track = document.getElementById('bannerTrack');
+  if (track) {
+    track.style.transform = `translateX(-${bannerIndex * 100}%)`;
+  }
+  document.querySelectorAll('.banner-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === bannerIndex);
+  });
+}
+
+// ========== Toast ==========
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// ========== 配送方式选择 ==========
+function selectDelivery(el) {
+  document.querySelectorAll('.delivery-option').forEach(d => {
+    d.classList.remove('selected');
+    d.querySelector('span:last-child').style.color = 'transparent';
+  });
+  el.classList.add('selected');
+  el.querySelector('span:last-child').style.color = 'var(--primary)';
+}
+
+// ========== 数量控制 ==========
+function changeQty(delta) {
+  const numEl = document.getElementById('qtyNum');
+  let num = parseInt(numEl.textContent) + delta;
+  if (num < 1) num = 1;
+  if (num > 99) num = 99;
+  numEl.textContent = num;
+  const price = 299;
+  document.querySelector('#page-product-detail .total-price').innerHTML = `¥${(price * num).toFixed(2)} <span>合计</span>`;
+}
+
+// ========== 首页商城分类筛选 ==========
+function filterHomeShop(el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ========== 首页分类快捷入口筛选 ==========
+function filterHomeCategory(category) {
+  // 找到筛选栏并激活对应标签
+  const filterTabs = document.querySelectorAll('#page-home .filter-tabs .filter-tab');
+  filterTabs.forEach(tab => {
+    tab.classList.remove('active');
+    if (tab.textContent.trim() === category || (category === '全部' && tab.textContent.trim() === '全部')) {
+      tab.classList.add('active');
+    }
+  });
+  // 如果没匹配到，激活"全部"
+  if (!document.querySelector('#page-home .filter-tabs .filter-tab.active')) {
+    filterTabs[0].classList.add('active');
+  }
+  // 滚动到商品列表区域
+  const productSection = document.querySelector('#page-home .waterfall-grid');
+  if (productSection) {
+    productSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ========== 服务模式切换 ==========
+function switchServiceMode(el, mode) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (mode === 'published') {
+    document.getElementById('serviceModePublished').style.display = 'block';
+    document.getElementById('serviceModeAppointment').style.display = 'none';
+  } else {
+    document.getElementById('serviceModePublished').style.display = 'none';
+    document.getElementById('serviceModeAppointment').style.display = 'block';
+  }
+}
+
+// ========== 预约服务价格更新 ==========
+function updateApptPrice() {
+  const sel = document.getElementById('apptServiceType');
+  const priceEl = document.getElementById('apptPrice');
+  const selectedOption = sel.options[sel.selectedIndex];
+  const price = selectedOption.getAttribute('data-price');
+  if (price) {
+    priceEl.textContent = '¥' + price;
+  } else {
+    priceEl.textContent = '¥--';
+  }
+}
+
+// ========== 预约时间段选择 ==========
+function selectApptTime(el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.appt-time-btn').forEach(b => {
+    b.style.borderColor = '';
+    b.style.background = '';
+  });
+  el.style.borderColor = 'var(--primary)';
+  el.style.background = 'var(--primary-light)';
+}
+
+function filterServiceTab(el, category) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ========== 订单筛选 ==========
+function filterOrderTab(el, type) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const equipSubTabs = document.getElementById('equipSubTabs');
+  const serviceSubTabs = document.getElementById('serviceSubTabs');
+  if (type === 'equipment') {
+    document.getElementById('equipmentOrders').style.display = 'block';
+    document.getElementById('serviceOrders').style.display = 'none';
+    if (equipSubTabs) equipSubTabs.style.display = 'flex';
+    if (serviceSubTabs) serviceSubTabs.style.display = 'none';
+  } else {
+    document.getElementById('equipmentOrders').style.display = 'none';
+    document.getElementById('serviceOrders').style.display = 'block';
+    if (equipSubTabs) equipSubTabs.style.display = 'none';
+    if (serviceSubTabs) serviceSubTabs.style.display = 'flex';
+  }
+}
+
+function filterOrderStatus(el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ========== 实名认证提交 ==========
+function submitAuth() {
+  showToast('认证信息已提交，请进行人脸识别');
+  setTimeout(() => {
+    document.getElementById('authAlert').style.display = 'none';
+    document.getElementById('authDone').style.display = 'flex';
+    document.getElementById('profileAuthStatus').innerHTML = '✅ 已认证';
+    document.getElementById('authBadge').textContent = '已认证';
+    document.getElementById('authBadge').style.background = '#E8F8EE';
+    document.getElementById('authBadge').style.color = '#34C759';
+    showToast('🎉 实名认证成功！');
+    setTimeout(() => goBack(), 1500);
+  }, 1500);
+}
+
+// ========== 初始化 ==========
+document.addEventListener('DOMContentLoaded', () => {
+  showPage('home');
+  // 启动Banner轮播
+  setInterval(slideBanner, 3500);
+});
+</script>
+
+</body>
+</html>
