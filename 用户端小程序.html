@@ -2235,28 +2235,14 @@ body {
         <span style="font-size:20px;opacity:0.7;">›</span>
       </div>
 
-      <!-- 个人统计 -->
-      <div class="profile-stats">
-        <div class="profile-stat-item" onclick="switchTab('orders')">
-          <span class="profile-stat-num">5</span>
-          <span class="profile-stat-label">全部订单</span>
-        </div>
-        <div class="profile-stat-item" onclick="navigateTo('coupon-center')">
-          <span class="profile-stat-num">3</span>
-          <span class="profile-stat-label">优惠券</span>
-        </div>
-        <div class="profile-stat-item" onclick="navigateTo('health-record')">
-          <span class="profile-stat-num">1</span>
-          <span class="profile-stat-label">健康档案</span>
-        </div>
-        <div class="profile-stat-item" onclick="navigateTo('address-list')">
-          <span class="profile-stat-num">2</span>
-          <span class="profile-stat-label">收货地址</span>
-        </div>
-      </div>
-
       <!-- 统一菜单列表 -->
       <div class="menu-list">
+        <div class="menu-item" onclick="navigateTo('coupon-center')">
+          <span class="menu-icon">🎫</span>
+          <span class="menu-text">优惠券</span>
+          <span class="menu-badge" style="background:var(--primary-light);color:var(--primary);">3张</span>
+          <span class="menu-arrow">›</span>
+        </div>
         <div class="menu-item" onclick="navigateTo('realname-auth')">
           <span class="menu-icon">🛡️</span>
           <span class="menu-text">实名认证</span>
@@ -2719,15 +2705,22 @@ body {
       </div>
     </div>
 
-    <!-- ==================== 子页面：领券中心 ==================== -->
+    <!-- ==================== 子页面：优惠券 ==================== -->
     <div class="page" id="page-coupon-center">
       <div class="header">
         <span class="header-back" onclick="goBack()">‹</span>
-        <span class="header-title">领券中心</span>
+        <span class="header-title">优惠券</span>
       </div>
 
-      <div class="section" style="margin-top:12px;">
-        <div class="coupon-card">
+      <div class="filter-tabs" style="margin-top:12px;">
+        <div class="filter-tab active" onclick="filterCouponTab(this, 'all')">全部</div>
+        <div class="filter-tab" onclick="filterCouponTab(this, 'used')">已使用</div>
+        <div class="filter-tab" onclick="filterCouponTab(this, 'expired')">已过期</div>
+      </div>
+
+      <div class="section" style="margin-top:0;">
+        <!-- 可使用 - 新人专享券 -->
+        <div class="coupon-card" data-coupon-status="active">
           <div class="coupon-left">
             <div class="coupon-amount">¥30</div>
             <div class="coupon-unit">满200可用</div>
@@ -2735,44 +2728,18 @@ body {
           <div class="coupon-right">
             <div>
               <div class="coupon-name">新人专享券</div>
-              <div class="coupon-condition">全场商品/服务可用</div>
-              <div class="coupon-time">2024-03-01 ~ 2024-06-30</div>
+              <div class="coupon-condition" style="display:flex;align-items:center;gap:6px;">
+                <span class="tag tag-green">可使用</span>
+                <span>全场商品/服务可用</span>
+              </div>
+              <div class="coupon-time">2024-03-01 ~ 2024-12-31</div>
             </div>
-            <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('🎉 领取成功！')">领取</button>
+            <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('🎉 使用成功！')">立即使用</button>
           </div>
         </div>
 
-        <div class="coupon-card">
-          <div class="coupon-left" style="background:linear-gradient(135deg, #FF9500, #FFBA54);">
-            <div class="coupon-amount">8折</div>
-            <div class="coupon-unit">服务专享</div>
-          </div>
-          <div class="coupon-right">
-            <div>
-              <div class="coupon-name">医护服务折扣券</div>
-              <div class="coupon-condition">仅限上门医护服务</div>
-              <div class="coupon-time">2024-03-15 ~ 2024-05-15</div>
-            </div>
-            <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('🎉 领取成功！')">领取</button>
-          </div>
-        </div>
-
-        <div class="coupon-card">
-          <div class="coupon-left" style="background:linear-gradient(135deg, #34C759, #6DD89E);">
-            <div class="coupon-amount">¥50</div>
-            <div class="coupon-unit">满399可用</div>
-          </div>
-          <div class="coupon-right">
-            <div>
-              <div class="coupon-name">医疗器械专属券</div>
-              <div class="coupon-condition">仅限医疗器械品类</div>
-              <div class="coupon-time">2024-03-01 ~ 2024-04-30</div>
-            </div>
-            <button class="btn btn-outline btn-sm" style="flex-shrink:0;color:var(--text-light);border-color:var(--border);">已领取</button>
-          </div>
-        </div>
-
-        <div class="coupon-card">
+        <!-- 可使用 - 检测仪器优惠券 -->
+        <div class="coupon-card" data-coupon-status="active">
           <div class="coupon-left" style="background:linear-gradient(135deg, #AF52DE, #D17BFF);">
             <div class="coupon-amount">¥20</div>
             <div class="coupon-unit">满100可用</div>
@@ -2780,10 +2747,51 @@ body {
           <div class="coupon-right">
             <div>
               <div class="coupon-name">检测仪器优惠券</div>
-              <div class="coupon-condition">仅限检测仪器品类</div>
-              <div class="coupon-time">2024-04-01 ~ 2024-05-31</div>
+              <div class="coupon-condition" style="display:flex;align-items:center;gap:6px;">
+                <span class="tag tag-green">可使用</span>
+                <span>仅限检测仪器品类</span>
+              </div>
+              <div class="coupon-time">2024-06-01 ~ 2024-12-31</div>
             </div>
-            <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('🎉 领取成功！')">领取</button>
+            <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="showToast('🎉 使用成功！')">立即使用</button>
+          </div>
+        </div>
+
+        <!-- 已使用 - 医护服务折扣券 -->
+        <div class="coupon-card" data-coupon-status="used" style="opacity:0.65;">
+          <div class="coupon-left" style="background:linear-gradient(135deg, #FF9500, #FFBA54);">
+            <div class="coupon-amount">8折</div>
+            <div class="coupon-unit">服务专享</div>
+          </div>
+          <div class="coupon-right">
+            <div>
+              <div class="coupon-name">医护服务折扣券</div>
+              <div class="coupon-condition" style="display:flex;align-items:center;gap:6px;">
+                <span class="tag tag-default">已使用</span>
+                <span>仅限上门医护服务</span>
+              </div>
+              <div class="coupon-time">使用时间：2024-05-10</div>
+            </div>
+            <button class="btn btn-outline btn-sm" style="flex-shrink:0;color:var(--text-light);border-color:var(--border);" disabled>已使用</button>
+          </div>
+        </div>
+
+        <!-- 已过期 - 医疗器械专属券 -->
+        <div class="coupon-card" data-coupon-status="expired" style="opacity:0.65;">
+          <div class="coupon-left" style="background:linear-gradient(135deg, #34C759, #6DD89E);">
+            <div class="coupon-amount">¥50</div>
+            <div class="coupon-unit">满399可用</div>
+          </div>
+          <div class="coupon-right">
+            <div>
+              <div class="coupon-name">医疗器械专属券</div>
+              <div class="coupon-condition" style="display:flex;align-items:center;gap:6px;">
+                <span class="tag tag-default">已过期</span>
+                <span>仅限医疗器械品类</span>
+              </div>
+              <div class="coupon-time">有效期至：2024-04-30</div>
+            </div>
+            <button class="btn btn-outline btn-sm" style="flex-shrink:0;color:var(--text-light);border-color:var(--border);" disabled>已过期</button>
           </div>
         </div>
       </div>
@@ -3598,6 +3606,25 @@ function showPhoneChangeDialog() {
   overlay.appendChild(dialog);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
   document.body.appendChild(overlay);
+}
+
+// ========== 优惠券 - 标签页切换 ==========
+function filterCouponTab(el, tabName) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  
+  const cards = document.querySelectorAll('#page-coupon-center .coupon-card');
+  cards.forEach(card => {
+    const status = card.getAttribute('data-coupon-status');
+    if (tabName === 'all') {
+      card.style.display = '';
+    } else if (tabName === 'used') {
+      card.style.display = status === 'used' ? '' : 'none';
+    } else if (tabName === 'expired') {
+      card.style.display = status === 'expired' ? '' : 'none';
+    }
+  });
 }
 
 // ========== 用户协议与隐私政策 - 标签页切换 ==========
