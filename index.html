@@ -1277,6 +1277,300 @@ body {
 .notification-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
 .notification-desc { font-size: 12px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .notification-time { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+
+/* ===== Settings Page ===== */
+.settings-group {
+  background: #FFF;
+  border-radius: var(--radius);
+  margin: 0 16px 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.settings-item:last-child { border-bottom: none; }
+.settings-item:active { background: #f8f8fa; }
+
+.settings-item-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.settings-item-text { flex: 1; font-size: 14px; font-weight: 500; }
+.settings-item-value { font-size: 13px; color: var(--text-secondary); margin-right: 8px; }
+.settings-item-arrow { color: var(--text-light); font-size: 16px; }
+
+.settings-danger { color: var(--danger); text-align: center; font-weight: 600; }
+
+/* ===== Settings Switch ===== */
+.settings-switch {
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+  background: #E5E5EA;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+
+.settings-switch.active { background: var(--primary); }
+
+.settings-switch-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #FFF;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.settings-switch.active .settings-switch-dot { transform: translateX(20px); }
+
+/* ===== Payment Page ===== */
+.payment-method {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: #FFF;
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.payment-method.selected { border-color: var(--primary); background: var(--primary-light); }
+.payment-method:active { transform: scale(0.98); }
+
+.payment-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.payment-body { flex: 1; }
+.payment-name { font-size: 15px; font-weight: 600; }
+.payment-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.payment-check { font-size: 20px; color: var(--primary); visibility: hidden; }
+.payment-method.selected .payment-check { visibility: visible; }
+
+/* ===== Review Page ===== */
+.star-rating {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.star-rating .star {
+  font-size: 32px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  color: #E5E5EA;
+}
+
+.star-rating .star.active { color: #FF9500; }
+.star-rating .star:active { transform: scale(1.2); }
+
+.review-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.review-tag {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  background: #F2F2F7;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.review-tag.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+.review-tag:active { transform: scale(0.95); }
+
+/* ===== Chat Page ===== */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  overflow-y: auto;
+}
+
+.chat-bubble-wrap {
+  display: flex;
+  margin-bottom: 16px;
+  align-items: flex-start;
+}
+
+.chat-bubble-wrap.sent { flex-direction: row-reverse; }
+
+.chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.chat-bubble {
+  max-width: 70%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 10px;
+  position: relative;
+}
+
+.chat-bubble-wrap:not(.sent) .chat-avatar { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+.chat-bubble-wrap:not(.sent) .chat-bubble { background: #FFF; box-shadow: var(--shadow); border-top-left-radius: 4px; }
+
+.chat-bubble-wrap.sent .chat-avatar { background: linear-gradient(135deg, #E8F2FC, #c7d2fe); }
+.chat-bubble-wrap.sent .chat-bubble { background: var(--primary); color: #FFF; border-top-right-radius: 4px; }
+
+.chat-time-divider {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-light);
+  margin: 16px 0;
+}
+
+.chat-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #FFF;
+  border-top: 1px solid var(--border);
+}
+
+.chat-input {
+  flex: 1;
+  height: 38px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  padding: 0 16px;
+  font-size: 14px;
+  outline: none;
+  background: #F5F6FA;
+  transition: border-color 0.2s;
+}
+
+.chat-input:focus { border-color: var(--primary); }
+
+.chat-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: #FFF;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.chat-send-btn:active { transform: scale(0.9); }
+
+/* ===== About / Version ===== */
+.about-card {
+  background: #FFF;
+  border-radius: var(--radius);
+  padding: 30px 20px;
+  text-align: center;
+  margin: 20px 16px;
+  box-shadow: var(--shadow);
+}
+
+.about-logo { font-size: 56px; margin-bottom: 12px; }
+.about-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.about-version { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+.about-desc { font-size: 13px; color: var(--text-light); line-height: 1.6; }
+
+/* ===== Service Progress Steps ===== */
+.progress-steps {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: #FFF;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.progress-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.progress-step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #E5E5EA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #FFF;
+  margin-bottom: 6px;
+}
+
+.progress-step.done .progress-step-dot { background: var(--success); }
+.progress-step.current .progress-step-dot { background: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
+
+.progress-step-label { font-size: 10px; color: var(--text-secondary); text-align: center; }
+.progress-step.done .progress-step-label { color: var(--success); }
+.progress-step.current .progress-step-label { color: var(--primary); font-weight: 600; }
+
+.progress-line {
+  width: 30px;
+  height: 2px;
+  background: #E5E5EA;
+  flex-shrink: 0;
+}
+
+.progress-line.done { background: var(--success); }
 </style>
 </head>
 <body>
@@ -1933,6 +2227,7 @@ body {
         <div class="profile-avatar">👤</div>
         <div class="profile-info">
           <div class="profile-name">张先生</div>
+          <div style="font-size:13px;opacity:0.85;margin-top:2px;">138****6789</div>
           <div class="profile-status">
             <span id="profileAuthStatus">⚠️ 未实名认证</span>
           </div>
@@ -1960,7 +2255,7 @@ body {
         </div>
       </div>
 
-      <!-- 实名认证入口 -->
+      <!-- 统一菜单列表 -->
       <div class="menu-list">
         <div class="menu-item" onclick="navigateTo('realname-auth')">
           <span class="menu-icon">🛡️</span>
@@ -1968,10 +2263,6 @@ body {
           <span class="menu-badge" id="authBadge">待认证</span>
           <span class="menu-arrow">›</span>
         </div>
-      </div>
-
-      <!-- 功能菜单 -->
-      <div class="menu-list">
         <div class="menu-item" onclick="navigateTo('health-record')">
           <span class="menu-icon">📋</span>
           <span class="menu-text">健康档案</span>
@@ -1982,13 +2273,19 @@ body {
           <span class="menu-text">收货地址管理</span>
           <span class="menu-arrow">›</span>
         </div>
-      </div>
-
-      <!-- 设置菜单 -->
-      <div class="menu-list">
-        <div class="menu-item">
-          <span class="menu-icon">⚙️</span>
-          <span class="menu-text">设置</span>
+        <div class="menu-item" onclick="navigateTo('agreement')">
+          <span class="menu-icon">📋</span>
+          <span class="menu-text">用户协议与隐私政策</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="navigateTo('about')">
+          <span class="menu-icon">🏥</span>
+          <span class="menu-text">关于我们</span>
+          <span class="menu-arrow">›</span>
+        </div>
+        <div class="menu-item" onclick="navigateTo('security-center')">
+          <span class="menu-icon">🛡️</span>
+          <span class="menu-text">安全中心</span>
           <span class="menu-arrow">›</span>
         </div>
       </div>
@@ -2851,6 +3148,102 @@ body {
       </div>
     </div>
 
+    <!-- ==================== 子页面：安全中心 ==================== -->
+    <div class="page" id="page-security-center">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">安全中心</span>
+      </div>
+
+      <div class="section" style="margin-top:12px;">
+        <div class="settings-group">
+          <div class="settings-item" onclick="showPhoneChangeDialog()">
+            <div class="settings-item-icon" style="background:#E8F2FC;">📱</div>
+            <span class="settings-item-text">修改手机号</span>
+            <span class="settings-item-value" id="currentPhoneLabel">138****6789</span>
+            <span class="settings-item-arrow">›</span>
+          </div>
+        </div>
+
+        <div class="settings-group" style="margin-top:16px;">
+          <div class="settings-item" onclick="confirmLogout()" style="justify-content:center;">
+            <span class="settings-item-text settings-danger">退出登录</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：用户协议与隐私政策 ==================== -->
+    <div class="page" id="page-agreement">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">用户协议与隐私政策</span>
+      </div>
+
+      <div class="filter-tabs" style="margin-top:12px;">
+        <div class="filter-tab active" onclick="switchAgreementTab(this, 'protocol')">用户服务协议</div>
+        <div class="filter-tab" onclick="switchAgreementTab(this, 'privacy')">隐私政策</div>
+      </div>
+
+      <div id="agreementProtocol" style="padding:0 16px;">
+        <div style="background:#FFF;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px;">
+          <h4 style="font-size:15px;font-weight:700;margin-bottom:12px;">康护到家用户服务协议</h4>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:10px;">欢迎使用康护到家平台（以下简称"本平台"）。本协议是您（以下简称"用户"）与本平台之间关于使用本平台服务所订立的协议。请您仔细阅读本协议，使用本平台服务即表示您同意本协议的全部条款。</p>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:10px;"><b>一、服务内容</b><br>本平台提供医疗器械商城购物、上门医护服务预约、健康管理咨询等服务。平台作为信息中介方，为用户与商户/医护人员之间提供服务撮合。</p>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:10px;"><b>二、用户权利与义务</b><br>1. 用户应提供真实、准确的个人信息完成注册。<br>2. 用户应妥善保管账号密码，因账号被盗用造成的损失由用户自行承担。<br>3. 用户应遵守国家法律法规，不得利用平台从事违法活动。</p>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:10px;"><b>三、平台权利与义务</b><br>1. 平台应保障服务的正常稳定运行。<br>2. 平台有权对违规用户采取限制措施。<br>3. 平台应保护用户隐私信息不外泄。</p>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:10px;"><b>四、免责声明</b><br>1. 上门医疗服务由持有合法资质的医护人员提供，平台不对服务质量承担直接责任。<br>2. 因不可抗力导致服务中断的，平台不承担责任。</p>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;"><b>五、协议修改</b><br>平台有权根据需要修改本协议条款，修改后的协议在平台上公布即生效。如用户继续使用服务，视为接受修改后的协议。</p>
+        </div>
+      </div>
+
+      <div id="agreementPrivacy" style="display:none;padding:0 16px;">
+        <div style="background:#FFF;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px;">
+          <h4 style="font-size:15px;font-weight:700;margin-bottom:12px;">康护到家隐私政策</h4>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:10px;">我们（康护到家平台）非常重视您的隐私保护。本隐私政策说明了我们如何收集、使用、存储和保护您的个人信息。</p>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:10px;"><b>一、信息收集</b><br>我们在您注册、下单、预约服务等过程中收集以下信息：<br>1. 个人基本信息：姓名、手机号、身份证号（用于实名认证）<br>2. 健康信息：身高体重、血压血糖、过敏史、既往病史（用于健康档案）<br>3. 地址信息：收货地址、服务地址<br>4. 设备信息：操作系统、浏览器类型等</p>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:10px;"><b>二、信息使用</b><br>我们收集的信息将用于：<br>1. 为您提供商品配送和上门服务<br>2. 完善您的健康档案并提供个性化健康建议<br>3. 优化平台功能和服务体验</p>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:10px;"><b>三、信息安全</b><br>我们采用行业标准的安全措施保护您的信息，包括数据加密、访问控制等。未经您的明确同意，我们不会将您的信息提供给第三方。</p>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:10px;"><b>四、信息保存期限</b><br>我们将仅在实现本政策所述目的所必需的期限内保留您的信息，除非法律另有规定。</p>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;"><b>五、联系我们</b><br>如您对本隐私政策有任何疑问，请联系我们：service@kanghudaojia.com</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 子页面：关于 ==================== -->
+    <div class="page" id="page-about">
+      <div class="header">
+        <span class="header-back" onclick="goBack()">‹</span>
+        <span class="header-title">关于我们</span>
+      </div>
+
+      <div class="about-card">
+        <div class="about-logo">🏥</div>
+        <div class="about-name">康护到家</div>
+        <div class="about-version">版本 v2.0.0</div>
+        <div class="about-desc">专业医护上门服务平台，致力于为用户提供便捷、安全、专业的居家医疗康护服务。涵盖器械商城、上门医护、健康管理等一站式服务。</div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-item">
+          <span class="settings-item-text">客服电话</span>
+          <span class="settings-item-value">400-888-9999</span>
+        </div>
+        <div class="settings-item">
+          <span class="settings-item-text">服务邮箱</span>
+          <span class="settings-item-value">service@kanghudaojia.com</span>
+        </div>
+        <div class="settings-item">
+          <span class="settings-item-text">ICP备案号</span>
+          <span class="settings-item-value">京ICP备2026XXXXX号</span>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:20px;color:var(--text-light);font-size:11px;">
+        © 2026 康护到家 版权所有
+      </div>
+    </div>
+
   </div><!-- /page-container -->
 
   <!-- Tab Bar -->
@@ -2882,7 +3275,7 @@ body {
 // ========== 页面导航系统 ==========
 const pageStack = [];
 const mainPages = ['home', 'service', 'orders', 'profile'];
-const subPages = ['product-detail', 'service-detail', 'cart', 'post-need', 'need-hall', 'realname-auth', 'health-record', 'address-list', 'coupon-center', 'notifications', 'search', 'appointment-form', 'category-list', 'order-detail-equip', 'order-detail-service'];
+const subPages = ['product-detail', 'service-detail', 'cart', 'post-need', 'need-hall', 'realname-auth', 'health-record', 'address-list', 'coupon-center', 'notifications', 'search', 'appointment-form', 'category-list', 'order-detail-equip', 'order-detail-service', 'security-center', 'agreement', 'about'];
 
 function showPage(pageId, isBack) {
   document.querySelectorAll('.page').forEach(p => {
@@ -3123,9 +3516,102 @@ function submitAuth() {
     document.getElementById('authBadge').textContent = '已认证';
     document.getElementById('authBadge').style.background = '#E8F8EE';
     document.getElementById('authBadge').style.color = '#34C759';
+    // 同步更新设置页面的认证状态
+    const settingsAuth = document.getElementById('settingsAuthStatus');
+    if (settingsAuth) {
+      settingsAuth.textContent = '已认证';
+      settingsAuth.style.color = '#34C759';
+    }
     showToast('🎉 实名认证成功！');
     setTimeout(() => goBack(), 1500);
   }, 1500);
+}
+
+// ========== 设置页面 - 开关切换 ==========
+function toggleSettingsSwitch(item, switchId) {
+  const sw = document.getElementById(switchId);
+  if (sw) {
+    sw.classList.toggle('active');
+    const label = item.querySelector('.settings-item-text').textContent;
+    const state = sw.classList.contains('active') ? '已开启' : '已关闭';
+    showToast(label + state);
+  }
+}
+
+// ========== 设置页面 - 清除缓存 ==========
+function clearCache() {
+  const cacheEl = document.getElementById('cacheSize');
+  showToast('正在清除缓存...');
+  setTimeout(() => {
+    if (cacheEl) cacheEl.textContent = '0 MB';
+    showToast('缓存已清除');
+  }, 1000);
+}
+
+// ========== 设置页面 - 退出登录 ==========
+function confirmLogout() {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;display:flex;align-items:center;justify-content:center;';
+  const dialog = document.createElement('div');
+  dialog.style.cssText = 'background:#FFF;border-radius:14px;width:280px;overflow:hidden;animation:pageIn 0.2s ease;';
+baba  dialog.innerHTML = `
+    <div style="padding:24px 20px 16px;text-align:center;">
+      <div style="font-size:17px;font-weight:700;margin-bottom:8px;">确认退出登录？</div>
+      <div style="font-size:13px;color:#86868B;">退出后需要重新登录才能使用服务</div>
+    </div>
+    <div style="display:flex;border-top:1px solid #E5E5EA;">
+      <button style="flex:1;padding:14px;border:none;background:#FFF;font-size:16px;color:#86868B;cursor:pointer;border-right:1px solid #E5E5EA;" onclick="this.closest('div[style*=fixed]').remove()">取消</button>
+      <button style="flex:1;padding:14px;border:none;background:#FFF;font-size:16px;color:#FF3B30;font-weight:600;cursor:pointer;" onclick="this.closest('div[style*=fixed]').remove();showToast('已退出登录');switchTab('home')">退出登录</button>
+    </div>
+  `;
+  overlay.appendChild(dialog);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
+
+// ========== 安全中心 - 修改手机号对话框 ==========
+function showPhoneChangeDialog() {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;display:flex;align-items:center;justify-content:center;';
+  const dialog = document.createElement('div');
+  dialog.style.cssText = 'background:#FFF;border-radius:14px;width:320px;overflow:hidden;animation:pageIn 0.2s ease;';
+  dialog.innerHTML = `
+    <div style="padding:20px 20px 12px;">
+      <div style="font-size:17px;font-weight:700;margin-bottom:16px;text-align:center;">修改手机号</div>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">新手机号</label>
+        <input type="tel" class="form-input" placeholder="请输入新手机号" style="height:40px;font-size:14px;padding:0 12px;" maxlength="11">
+      </div>
+      <div style="margin-bottom:4px;">
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">验证码</label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" class="form-input" placeholder="请输入验证码" style="flex:1;height:40px;font-size:14px;padding:0 12px;" maxlength="6">
+          <button style="flex-shrink:0;height:40px;padding:0 12px;border:1.5px solid var(--primary);border-radius:8px;background:#FFF;color:var(--primary);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;" onclick="this.textContent='60s';let t=60,i=setInterval(()=>{t--;if(t<=0){clearInterval(i);this.textContent='获取验证码';this.disabled=false}else{this.textContent=t+'s';this.disabled=true}},1000);">获取验证码</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;border-top:1px solid #E5E5EA;">
+      <button style="flex:1;padding:14px;border:none;background:#FFF;font-size:15px;color:#86868B;cursor:pointer;border-right:1px solid #E5E5EA;" onclick="this.closest('div[style*=fixed]').remove()">取消</button>
+      <button style="flex:1;padding:14px;border:none;background:#FFF;font-size:15px;color:var(--primary);font-weight:600;cursor:pointer;" onclick="this.closest('div[style*=fixed]').remove();document.getElementById('currentPhoneLabel').textContent='138****8888';showToast('手机号修改成功')">确认修改</button>
+    </div>
+  `;
+  overlay.appendChild(dialog);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
+
+// ========== 用户协议与隐私政策 - 标签页切换 ==========
+function switchAgreementTab(el, tabName) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (tabName === 'protocol') {
+    document.getElementById('agreementProtocol').style.display = 'block';
+    document.getElementById('agreementPrivacy').style.display = 'none';
+  } else {
+    document.getElementById('agreementProtocol').style.display = 'none';
+    document.getElementById('agreementPrivacy').style.display = 'block';
+  }
 }
 
 // ========== 初始化 ==========
